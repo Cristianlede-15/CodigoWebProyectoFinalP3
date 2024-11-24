@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipos de Comercios</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        /* Reset básico */
+        body, ul, li, table, th, td {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Estilos de la página */
+        body {
+            background-color: #ecf0f1;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            color: #666;
+        }
+
+        .btn, .favorite-button {
+            padding: 0.5rem 1rem;
+            color: white;
+            background-color: #2c3e50;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn:hover, .favorite-button:hover {
+            background-color: #16a085;
+            transform: scale(1.1);
+        }
+
+        .btn-action {
+            display: flex;
+            gap: 0.5rem;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/admin/dashboard">Home</a></li>
+            <li><a href="/admin/clientes">Clientes</a></li>
+            <li><a href="/admin/delivery">Deliveries</a></li>
+            <li><a href="/admin/comercios">Comercios</a></li>
+            <li><a href="/admin/configuracion">Configuración</a></li>
+            <li><a href="/admin/administradores">Administradores</a></li>
+            <li><a href="/admin/tipos_comercios">Tipos de Comercios</a></li>
+            <li><a href="/admin/logout">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+    <h1>Listado de Tipos de Comercios</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre del Tipo</th>
+                <th>Ícono</th>
+                <th>Descripción</th>
+                <th>Cantidad de Comercios</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% tiposComercios.forEach(tipo => { %>
+                <tr>
+                    <td><%= tipo.name %></td>
+                    <td><img src="<%= tipo.icon %>" alt="<%= tipo.name %>" style="width: 32px; height: 32px;"></td>
+                    <td><%= tipo.description %></td>
+                    <td><%= tipo.comercios ? tipo.comercios.length : 0 %></td>
+                    <td>
+                        <div class="btn-action">
+                            <a href="/admin/tipos_comercios/editar/<%= tipo.id %>" class="btn">Editar</a>
+                            <form action="/admin/tipos_comercios/eliminar/<%= tipo.id %>" method="POST" style="display:inline;">
+                                <button type="submit" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar este tipo de comercio?');">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <button onclick="window.location.href='/admin/tipos_comercios/nuevo'" class="favorite-button">Crear Tipo de Comercio</button>
+</body>
+</html>

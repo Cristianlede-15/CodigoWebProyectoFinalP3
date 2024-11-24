@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- views/adminViews/newBusinessType.ejs -->
+
+<h1>Agregar Nuevo Tipo de Comercio</h1>
+<form action="/admin/tipos_comercios/nuevo" method="POST">
+    <label for="name">Nombre:</label>
+    <input type="text" name="name" id="name" required>
+
+    <label for="icon">Icono (URL):</label>
+    <input type="text" name="icon" id="icon">
+
+    <label for="description">Descripción:</label>
+    <textarea name="description" id="description"></textarea>
+
+    <button type="submit">Crear Tipo</button>
+</form>
+<a href="/admin/tipos_comercios">Volver al Listado</a>
+</body>
+</html>

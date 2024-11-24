@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        /* Reset básico */
+        body, ul, li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Estilos del Dashboard */
+        body {
+            background-color: #ecf0f1;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+        }
+
+        .dashboard-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .metric {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .metric:hover {
+            transform: translateY(-10px); /* Efecto al pasar el ratón */
+        }
+
+        .metric h2 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric p {
+            font-size: 2rem;
+            color: #16a085;
+            font-weight: bold;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/admin/dashboard">Home</a></li>
+            <li><a href="/admin/clientes">Clientes</a></li>
+            <li><a href="/admin/delivery">Deliveries</a></li>
+            <li><a href="/admin/comercios">Comercios</a></li>
+            <li><a href="/admin/configuracion">Configuración</a></li>
+            <li><a href="/admin/administradores">Administradores</a></li>
+            <li><a href="/admin/tipos_comercios">Tipos de Comercios</a></li>
+            <li><a href="/admin/logout">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+    <h1>Dashboard</h1>
+    <div class="dashboard-metrics">
+        <div class="metric">
+            <h2>Total de Pedidos</h2>
+            <p><%= totalOrders %></p>
+        </div>
+        <div class="metric">
+            <h2>Pedidos del Día</h2>
+            <p><%= ordersToday %></p>
+        </div>
+        <div class="metric">
+            <h2>Comercios Activos</h2>
+            <p><%= activeBusinesses %></p>
+        </div>
+        <div class="metric">
+            <h2>Comercios Inactivos</h2>
+            <p><%= inactiveBusinesses %></p>
+        </div>
+        <div class="metric">
+            <h2>Clientes Activos</h2>
+            <p><%= activeClients %></p>
+        </div>
+        <div class="metric">
+            <h2>Clientes Inactivos</h2>
+            <p><%= inactiveClients %></p>
+        </div>
+        <div class="metric">
+            <h2>Deliveries Activos</h2>
+            <p><%= activeDeliveries %></p>
+        </div>
+        <div class="metric">
+            <h2>Deliveries Inactivos</h2>
+            <p><%= inactiveDeliveries %></p>
+        </div>
+        <div class="metric">
+            <h2>Total de Productos</h2>
+            <p><%= totalProducts %></p>
+        </div>
+    </div>
+</body>
+</html>

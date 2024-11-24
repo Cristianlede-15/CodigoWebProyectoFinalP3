@@ -1,0 +1,33 @@
+<!-- views/comerciosViews/crearCategoria.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Categoría</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        /* Agrega estilos relevantes aquí */
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/business/home">Inicio</a></li>
+            <li><a href="/business/perfil">Perfil</a></li>
+            <li><a href="/business/productos">Productos</a></li>
+            <li><a href="/business/categorias">Categorías</a></li>
+            <li><a href="/business/logout">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+    <div class="categories-container">
+        <h2>Crear Nueva Categoría</h2>
+        <form action="/business/categorias/crear" method="POST">
+            <label for="name">Nombre:</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="description">Descripción:</label><br>
+            <textarea id="description" name="description" required></textarea><br><br>
+            <button type="submit">Crear</button>
+        </form>
+    </div>
+</body>
+</html>

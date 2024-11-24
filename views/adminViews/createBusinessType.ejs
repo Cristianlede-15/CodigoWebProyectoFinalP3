@@ -1,0 +1,43 @@
+<!-- views/adminViews/createBusinessType.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Tipo de Comercio</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/admin/dashboard">Home</a></li>
+            <li><a href="/admin/clientes">Clientes</a></li>
+            <li><a href="/admin/delivery">Deliveries</a></li>
+            <li><a href="/admin/comercios">Comercios</a></li>
+            <li><a href="/admin/configuracion">Configuración</a></li>
+            <li><a href="/admin/administradores">Administradores</a></li>
+            <li><a href="/admin/tipos_comercios">Tipos de Comercios</a></li>
+            <li><a href="/admin/logout">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+    
+    <div class="commerce-container">
+        <h2>Crear Tipo de Comercio</h2>
+        <form action="/admin/tipos_comercios/nuevo" method="POST" enctype="multipart/form-data">
+            <div>
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+                <label for="description">Descripción:</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <div>
+                <label for="icon">Icono (Archivo):</label>
+                <input type="file" id="icon" name="icon" accept="image/*">
+            </div>
+            <button type="submit" class="favorite-button">Crear</button>
+        </form>
+    </div>
+</body>
+</html>

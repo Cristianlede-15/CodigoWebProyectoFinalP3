@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administradores</title>
+    <script>
+        function confirmAction(action, adminId) {
+            let message = '';
+            if (action === 'inactivar') {
+                message = '¿Está seguro que desea inactivar este usuario?';
+            } else if (action === 'activar') {
+                message = '¿Está seguro que desea activar este usuario?';
+            }
+            if (confirm(message)) {
+                window.location.href = `/admin/administradores/${action}/${adminId}`;
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/css/navbar.css">
+</head>
+<style>
+    /* Estilos generales */
+    body, ul, li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Estilos de la página */
+    body {
+        background-color: #ecf0f1;
+        padding: 2rem;
+    }
+
+    h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 2rem;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 2rem 0;
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #2c3e50;
+        color: white;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    td {
+        color: #666;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        color: white;
+        background-color: #2c3e50;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #16a085;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+</style>
+
+<body>
+    <nav class="navbar" role="navigation">
+        <ul class="navbar-menu">
+            <li><a href="/admin/dashboard">Home</a></li>
+            <li><a href="/admin/clientes">Clientes</a></li>
+            <li><a href="/admin/delivery">Deliveries</a></li>
+            <li><a href="/admin/comercios">Comercios</a></li>
+            <li><a href="/admin/configuracion">Configuración</a></li>
+            <li><a href="/admin/administradores">Administradores</a></li>
+            <li><a href="/admin/tipos_comercios">Tipos de Comercios</a></li>
+            <li><a href="/admin/logout">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+    <h1>Administradores</h1>
+    <a href="/admin/administradores/crear" class="btn">Crear Administrador</a>
+    <main>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Usuario</th>
+                    <th>Cédula</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (Array.isArray(administradores) && administradores.length> 0) { %>
+                    <% administradores.forEach(admin => { %>
+                        <tr>
+                            <td><%= admin.first_name %></td>
+                            <td><%= admin.last_name %></td>
+                            <td><%= admin.username %></td>
+                            <td><%= admin.cedula %></td>
+                            <td><%= admin.email %></td>
+                            <td>
+                                <% if (currentUser && String(admin.id) !== String(currentUser.id)) { %>
+                                    <% if (admin.is_active) { %>
+                                        <button onclick="confirmAction('inactivar', '<%= admin.id %>')" class="btn">Inactivar</button>
+                                    <% } else { %>
+                                        <button onclick="confirmAction('activar', '<%= admin.id %>')" class="btn">Activar</button>
+                                    <% } %>
+                                    <a href="/admin/administradores/editar/<%= admin.id %>" class="btn">Editar</a>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="text-center">No hay administradores disponibles.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </main>
+</body>
+
+</html>

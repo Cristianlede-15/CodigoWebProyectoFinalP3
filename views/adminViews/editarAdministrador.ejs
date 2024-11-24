@@ -1,0 +1,58 @@
+<!-- views/adminViews/editarAdministrador.ejs -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Administrador</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/admin/dashboard">Home</a></li>
+            <li><a href="/admin/clientes">Clientes</a></li>
+            <li><a href="/admin/delivery">Deliveries</a></li>
+            <li><a href="/admin/comercios">Comercios</a></li>
+            <li><a href="/admin/configuracion">Configuración</a></li>
+            <li><a href="/admin/administradores">Administradores</a></li>
+            <li><a href="/admin/tipos_comercios">Tipos de Comercios</a></li>
+            <li><a href="/admin/logout">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+    <h1>Editar Administrador</h1>
+    <form action="/admin/administradores/editar/<%= admin.id %>" method="POST">
+        <div>
+            <label for="first_name">Nombre:</label>
+            <input type="text" name="first_name" id="first_name" value="<%= admin.first_name %>" required>
+        </div>
+        <div>
+            <label for="last_name">Apellido:</label>
+            <input type="text" name="last_name" id="last_name" value="<%= admin.last_name %>" required>
+        </div>
+        <div>
+            <label for="username">Usuario:</label>
+            <input type="text" name="username" id="username" value="<%= admin.username %>" required>
+        </div>
+        <div>
+            <label for="cedula">Cédula:</label>
+            <input type="text" name="cedula" id="cedula" value="<%= admin.cedula %>" required>
+        </div>
+        <div>
+            <label for="email">Correo Electrónico:</label>
+            <input type="email" name="email" id="email" value="<%= admin.email %>" required>
+        </div>
+        <!-- Campos para cambiar la contraseña -->
+        <div>
+            <label for="password">Nueva Contraseña:</label>
+            <input type="password" name="password" id="password">
+        </div>
+        <div>
+            <label for="confirm_password">Confirmar Nueva Contraseña:</label>
+            <input type="password" name="confirm_password" id="confirm_password">
+        </div>
+        <button type="submit">Guardar Cambios</button>
+        <a href="/admin/administradores">Cancelar</a>
+    </form>
+</body>
+</html>

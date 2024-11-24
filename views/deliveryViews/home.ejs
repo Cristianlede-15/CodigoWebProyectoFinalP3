@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home del Delivery</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Pedidos */
+        .order {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #fff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .order:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+
+        .order img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            margin-right: 1rem;
+            object-fit: cover;
+        }
+
+        .order-info {
+            flex-grow: 1;
+        }
+
+        .order-info p {
+            margin: 5px 0;
+        }
+
+        .order-info .status {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/delivery/home">Home</a></li>
+            <li><a href="/delivery/perfil">Mi perfil</a></li>
+            <li><a href="/delivery/perfil">Logout</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h2>Pedidos Asignados</h2>
+        <div class="order">
+            <img src="path/to/logo1.png" alt="Logo Comercio">
+            <div class="order-info">
+                <p class="status">En proceso</p>
+                <p>Total: $50.00</p>
+                <p>Fecha: 2024-11-14</p>
+            </div>
+        </div>
+        <div class="order">
+            <img src="path/to/logo2.png" alt="Logo Comercio">
+            <div class="order-info">
+                <p class="status">En proceso</p>
+                <p>Total: $30.00</p>
+                <p>Fecha: 2024-11-14</p>
+            </div>
+        </div>
+        <!-- Agrega más pedidos según sea necesario -->
+    </div>
+</body>
+</html>

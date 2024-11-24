@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="/css/registro.css">
+</head>
+<body>
+    <div class="register-container">
+        <img src="/img/online-registration.png" alt="Ícono de registro" class="register-icon">
+        <h2>Registrarse</h2>
+        <form method="POST" action="/auth/register">
+            <div class="form-row">
+                <input type="text" name="first_name" placeholder="Nombre" required>
+                <input type="text" name="last_name" placeholder="Apellido" required>
+            </div>
+            <div class="form-row">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="username" placeholder="Nombre de usuario" required>
+            </div>
+            <div class="form-row">
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <input type="password" name="confirm_password" placeholder="Confirmar contraseña" required>
+            </div>
+            <input type="text" name="phone" placeholder="Teléfono">
+            <select name="role" required>
+                <option value="" disabled selected>Selecciona un rol</option>
+                <option value="client">Cliente</option>
+                <option value="delivery">Delivery</option>
+                <option value="business">Comercio</option>
+                <option value="admin">Comercio</option>
+
+            </select>
+            <button type="submit">Registrarse</button>
+        </form>
+        <a href="/">Volver al login</a>
+    </div>
+</body>
+</html>

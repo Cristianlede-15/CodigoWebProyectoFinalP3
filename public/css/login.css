@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ajuste para asegurar el centrado vertical */
+    margin: 0;
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    width: 320px;
+    text-align: center;
+}
+
+
+.login-container h2 {
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 1.5em;
+}
+
+.login-container label {
+    display: block;
+    font-weight: bold;
+    color: #555;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.login-container input {
+    width: 80%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none; /* Elimina las líneas */
+    border-bottom: 2px solid #ccc; /* Solo línea inferior */
+    border-radius: 0; /* Elimina el redondeo */
+    font-size: small;
+    transition: border-color 0.3s;
+    background-color: #f9f9f9; /* Fondo claro para diferenciar */
+}
+
+.login-container input:focus {
+    border-bottom-color: #4CAF50; /* Color de borde al hacer foco */
+    outline: none; /* Quita el contorno */
+}
+
+
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.login-container button:hover {
+    background-color: #45a049;
+}
+
+.login-container .links {
+    margin-top: 15px;
+}
+
+.login-container .links a {
+    display: block;
+    color: #007BFF;
+    text-decoration: none;
+    font-size: 0.9em;
+    margin: 5px 0;
+    transition: color 0.3s;
+}
+
+.login-container .links a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}

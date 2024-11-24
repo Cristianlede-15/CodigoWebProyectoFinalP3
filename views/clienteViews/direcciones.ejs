@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Direcciones</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Contenedor principal */
+        .addresses-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .addresses-container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Estilo de cada dirección */
+        .address {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #fff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .address:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+
+        .address-info p {
+            margin: 0;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        /* Botones de acciones */
+        .address-actions button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .address-actions button:hover {
+            background-color: #ffcc00;
+            color: #333;
+            transform: scale(1.1);
+        }
+
+        /* Botón para agregar nueva dirección */
+        .add-button {
+            display: block;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .add-button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/user/home">Home</a></li>
+            <li><a href="/user/perfil">Mi perfil</a></li>
+            <li><a href="/user/pedidos">Mis pedidos</a></li>
+            <li><a href="/user/direcciones">Mis direcciones</a></li>
+            <li><a href="/user/favoritos">Mis favoritos</a></li>
+            <li><a href="/user/logout">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+    
+    <div class="addresses-container">
+        <h2>Mis Direcciones</h2>
+        <div class="address">
+            <div class="address-info">
+                <p>123 Calle Falsa, Springfield</p>
+            </div>
+            <div class="address-actions">
+                <button>Editar</button>
+                <button>Eliminar</button>
+            </div>
+        </div>
+        <div class="address">
+            <div class="address-info">
+                <p>456 Avenida Siempreviva, Shelbyville</p>
+            </div>
+            <div class="address-actions">
+                <button>Editar</button>
+                <button>Eliminar</button>
+            </div>
+        </div>
+        <!-- Agrega más direcciones según sea necesario -->
+        <button class="add-button">Agregar nueva dirección</button>
+    </div>
+</body>
+</html>

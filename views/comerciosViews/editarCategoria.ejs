@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Categoría</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        /* Add relevant styles */
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/business/home">Home</a></li>
+            <li><a href="/business/perfil">Perfil</a></li>
+            <li><a href="/business/categorias">Mantenimiento de categorías</a></li>
+            <li><a href="/business/productos">Mantenimiento de productos</a></li>
+            <li><a href="/business/logout">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="categories-container">
+        <h2>Editar Categoría</h2>
+        <form action="/business/categorias/editar/<%= category.id %>" method="POST">
+            <label for="name">Nombre:</label><br>
+            <input type="text" id="name" name="name" value="<%= category.name %>" required><br><br>
+            <label for="description">Descripción:</label><br>
+            <textarea id="description" name="description" required><%= category.description %></textarea><br><br>
+            <button type="submit">Guardar Cambios</button>
+        </form>
+    </div>
+</body>
+</html>

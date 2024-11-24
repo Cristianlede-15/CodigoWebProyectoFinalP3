@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Contenedor principal */
+        .profile-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Formulario */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        form input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s ease;
+        }
+
+        form input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        /* Botones */
+        form button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        form button[type="submit"]:hover {
+            background-color: #28a745;
+            transform: scale(1.05);
+        }
+
+        form button[type="button"]:hover {
+            background-color: #ffcc00;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/user/home">Home</a></li>
+            <li><a href="/user/perfil">Mi perfil</a></li>
+            <li><a href="/user/pedidos">Mis pedidos</a></li>
+            <li><a href="/user/direcciones">Mis direcciones</a></li>
+            <li><a href="/user/favoritos">Mis favoritos</a></li>
+            <li><a href="/user/logout">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+        <div class="profile-container">
+        <h2>Mi Perfil</h2>
+        <form>
+            <input type="text" placeholder="Nombre" required>
+            <input type="text" placeholder="Apellido" required>
+            <input type="email" placeholder="Email" required>
+            <input type="tel" placeholder="Teléfono" required>
+            <input type="text" placeholder="Dirección" required>
+            <button type="submit">Guardar cambios</button>
+            <button type="button">Cambiar contraseña</button>
+        </form>
+    </div>
+</body>
+</html>

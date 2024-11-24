@@ -1,0 +1,133 @@
+<!-- views/comerciosViews/productos.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantenimiento de Productos</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+        .navbar-menu {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-menu li {
+            float: left;
+        }
+        .navbar-menu li a {
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .navbar-menu li a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .products-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+        .product {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ccc;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .product:last-child {
+            border-bottom: none;
+        }
+        .product:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+        .product-info {
+            flex-grow: 1;
+        }
+        .product-info p {
+            margin: 5px 0;
+        }
+        .product-actions button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .product-actions button:hover {
+            background-color: #45a049;
+        }
+        .add-button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+        }
+        .add-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/business/home">Home</a></li>
+            <li><a href="/business/perfil">Perfil</a></li>
+            <li><a href="/business/categorias">Mantenimiento de categorías</a></li>
+            <li><a href="/business/productos">Mantenimiento de productos</a></li>
+            <li><a href="/business/logout">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="products-container">
+        <h2>Mantenimiento de Productos</h2>
+        <% if (products.length === 0) { %>
+            <p>No hay productos disponibles. <a href="/business/productos/crear">Agregar uno nuevo</a>.</p>
+        <% } else { %>
+            <% products.forEach(product => { %>
+                <div class="product">
+                    <div class="product-info">
+                        <p><strong>Nombre:</strong> <%= product.name %></p>
+                        <p><strong>Precio:</strong> $<%= product.price.toFixed(2) %></p>
+                        <p><strong>Categoría:</strong> <%= product.category.name %></p>
+                    </div>
+                    <div class="product-actions">
+                        <a href="/business/productos/editar/<%= product.id %>"><button>Editar</button></a>
+                        <form action="/business/productos/eliminar/<%= product.id %>" method="POST" style="display:inline;">
+                            <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
+        <a href="/business/productos/crear"><button class="add-button">Agregar nuevo producto</button></a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipos de Comercios</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Tipos de comercios */
+        .business-type {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #fff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .business-type:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+
+        .business-type img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            margin-right: 1rem;
+            object-fit: cover;
+        }
+
+        .business-type span {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Mensaje vacío */
+        .container p {
+            text-align: center;
+            font-size: 1rem;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/user/home">Home</a></li>
+            <li><a href="/user/perfil">Mi perfil</a></li>
+            <li><a href="/user/pedidos">Mis pedidos</a></li>
+            <li><a href="/user/direcciones">Mis direcciones</a></li>
+            <li><a href="/user/favoritos">Mis favoritos</a></li>
+            <li><a href="/user/logout">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h2>Tipos de Comercios</h2>
+        <% if (businesses.length > 0) { %>
+            <% businesses.forEach(function(business) { %>
+                <div class="business-type">
+                    <img src="<%= business.logo %>" alt="Icono">
+                    <span><%= business.business_name %></span>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No hay negocios disponibles en este momento.</p>
+        <% } %>
+    </div>
+</body>
+</html>
