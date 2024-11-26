@@ -1,3 +1,4 @@
+<!-- views/clienteViews/direcciones.ejs -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,7 +17,7 @@
 
         /* Contenedor principal */
         .addresses-container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 2rem auto;
             background: white;
             padding: 2rem;
@@ -93,6 +94,22 @@
             background-color: #218838;
             transform: scale(1.05);
         }
+
+        /* Estilos para los mensajes */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
@@ -109,26 +126,40 @@
     
     <div class="addresses-container">
         <h2>Mis Direcciones</h2>
-        <div class="address">
-            <div class="address-info">
-                <p>123 Calle Falsa, Springfield</p>
+
+        <!-- Mensajes de éxito -->
+        <% if (success_msg) { %>
+            <div class="alert success">
+                <%= success_msg %>
             </div>
-            <div class="address-actions">
-                <button>Editar</button>
-                <button>Eliminar</button>
+        <% } %>
+
+        <!-- Mensajes de error -->
+        <% if (error_msg) { %>
+            <div class="alert error">
+                <%= error_msg %>
             </div>
-        </div>
-        <div class="address">
-            <div class="address-info">
-                <p>456 Avenida Siempreviva, Shelbyville</p>
-            </div>
-            <div class="address-actions">
-                <button>Editar</button>
-                <button>Eliminar</button>
-            </div>
-        </div>
-        <!-- Agrega más direcciones según sea necesario -->
-        <button class="add-button">Agregar nueva dirección</button>
+        <% } %>
+
+        <% if (addresses.length === 0) { %>
+            <p>No tienes ninguna dirección creada. <a href="/user/direcciones/agregar">Agregar una dirección</a></p>
+        <% } else { %>
+            <% addresses.forEach(address => { %>
+                <div class="address">
+                    <div class="address-info">
+                        <p><strong><%= address.name %></strong>: <%= address.description %></p>
+                    </div>
+                    <div class="address-actions">
+                        <a href="/user/direcciones/editar/<%= address.id %>"><button>Editar</button></a>
+                        <form action="/user/direcciones/eliminar/<%= address.id %>" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar esta dirección?');">
+                            <button type="submit">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
+        
+        <a href="/user/direcciones/agregar"><button class="add-button">Agregar nueva dirección</button></a>
     </div>
 </body>
 </html>

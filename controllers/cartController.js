@@ -45,6 +45,41 @@ exports.addToCart = async (req, res) => {
     }
 };
 
+// controllers/cartController.js
+
+exports.removeFromCart = (req, res) => {
+    try {
+        const { productId } = req.body;
+        console.log('Received productId to remove:', productId);
+
+        const cart = req.session.cart;
+
+        if (!cart) {
+            console.error('No cart found in session.');
+            return res.status(400).send('No cart found.');
+        }
+
+        console.log('Current cart items:', cart.items);
+
+        const parsedProductId = parseInt(productId, 10);
+        const itemIndex = cart.items.findIndex(item => item.product.id === parsedProductId);
+
+        if (itemIndex > -1) {
+            const item = cart.items[itemIndex];
+            cart.total -= parseFloat(item.product.price);
+            cart.items.splice(itemIndex, 1);
+            console.log('Removed product:', item.product.name);
+            console.log('Updated cart total:', cart.total);
+        } else {
+            console.warn('Product not found in cart:', productId);
+        }
+
+        res.redirect('back');
+    } catch (error) {
+        console.error('Error removing from cart:', error);
+        res.status(500).send('Error removing from cart');
+    }
+};
 exports.checkout = (req, res) => {
     // Lógica para procesar el pago y completar la compra
 

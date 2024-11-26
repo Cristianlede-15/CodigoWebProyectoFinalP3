@@ -1,0 +1,134 @@
+<!-- views/clienteViews/seleccionarDireccion.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Dirección</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .address-list {
+            margin-bottom: 2rem;
+        }
+
+        .address-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .address-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .address-list li input {
+            margin-right: 1rem;
+        }
+
+        .order-summary {
+            margin-top: 2rem;
+        }
+
+        .order-summary img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        .order-summary h3 {
+            margin-bottom: 1rem;
+        }
+
+        .order-summary p {
+            margin-bottom: 0.5rem;
+        }
+
+        .continue-button {
+            display: block;
+            margin: 1.5rem auto;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .continue-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/user/home">Home</a></li>
+            <li><a href="/user/perfil">Mi perfil</a></li>
+            <li><a href="/user/pedidos">Mis pedidos</a></li>
+            <li><a href="/user/direcciones">Mis direcciones</a></li>
+            <li><a href="/user/favoritos">Mis favoritos</a></li>
+            <li><a href="/user/logout">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2>Seleccionar Dirección</h2>
+
+        <% if (addresses.length === 0) { %>
+            <p>No tienes ninguna dirección creada. <a href="/user/direcciones">Crear una dirección</a></p>
+        <% } else { %>
+            <form action="/checkout" method="POST">
+                <div class="address-list">
+                    <ul>
+                        <% addresses.forEach(address => { %>
+                            <li>
+                                <input type="radio" name="addressId" value="<%= address.id %>" required>
+                                <span><%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.zip %></span>
+                            </li>
+                        <% }) %>
+                    </ul>
+                </div>
+
+                <div class="order-summary">
+                    <h3>Resumen del Pedido</h3>
+                    <img src="/ImagesRepo/<%= business.logo %>" alt="<%= business.business_name %>">
+                    <p><strong>Comercio:</strong> <%= business.business_name %></p>
+                    <p><strong>Subtotal:</strong> $<%= cart.total %></p>
+                    <p><strong>ITBIS (<%= taxRate %>%):</strong> $<%= (cart.total * taxRate / 100).toFixed(2) %></p>
+                    <p><strong>Total:</strong> $<%= (cart.total * (1 + taxRate / 100)).toFixed(2) %></p>
+                </div>
+
+                <button type="submit" class="continue-button">Continuar</button>
+            </form>
+        <% } %>
+    </div>
+</body>
+</html>

@@ -6,6 +6,9 @@ const { Op } = require('sequelize');
 const Favorites = require('../models/Favorites'); // Ajusta la ruta según sea necesario
 const Categories = require('../models/Categories');
 const Products = require('../models/Product');
+const Configuracion = require('../models/Configuracion');
+const Address = require('../models/Adresses'); // Ajusta la ruta según sea necesario
+
 
 
 
@@ -154,6 +157,7 @@ exports.searchBusinessesByName = async (req, res) => {
 exports.getBusinessDetails = async (req, res) => {
     const { business_id } = req.params;
     const user_id = req.session.user.id;
+    const cart = req.session.cart || { items: [], total: 0 };
 
     try {
         const business = await Business.findByPk(business_id, {
@@ -180,13 +184,166 @@ exports.getBusinessDetails = async (req, res) => {
 
         const isFavorite = !!favorite;
 
+        // Obtener la configuración de ITBIS
+        const configuracion = await Configuracion.findOne();
+        const taxRate = configuracion ? configuracion.tax_rate : 0;
+
         res.render('clienteViews/comercio', {
             business,
             categories,
-            isFavorite
+            isFavorite,
+            cart,
+            taxRate
         });
     } catch (error) {
         console.error('Error al obtener detalles del negocio:', error);
         res.status(500).send('Error al obtener detalles del negocio');
+    }
+};
+
+
+exports.selectAddress = async (req, res) => {
+    const user_id = req.session.user.id;
+    const cart = req.session.cart || { items: [], total: 0 };
+
+    try {
+        const addresses = await Address.findAll({ where: { user_id } });
+        const business = await Business.findByPk(req.session.business_id, {
+            attributes: ['id', 'business_name', 'logo']
+        });
+
+        // Obtener la configuración de ITBIS
+        const configuracion = await Configuracion.findOne();
+        const taxRate = configuracion ? configuracion.tax_rate : 0;
+
+        res.render('clienteViews/seleccionarDireccion', {
+            addresses,
+            business,
+            cart,
+            taxRate
+        });
+    } catch (error) {
+        console.error('Error al obtener direcciones:', error);
+        res.status(500).send('Error al obtener direcciones');
+    }
+};
+
+exports.getUserAddresses = async (req, res) => {
+    const userId = req.session.user.id;
+
+    try {
+        const addresses = await Address.findAll({
+            where: { user_id: userId },
+            attributes: ['id', 'name', 'description']
+        });
+
+        res.render('clienteViews/direcciones', {
+            addresses,
+            success_msg: req.flash('success_msg'),
+            error_msg: req.flash('error_msg')
+        });
+    } catch (error) {
+        console.error('Error al obtener las direcciones del usuario:', error);
+        req.flash('error_msg', 'Error al obtener las direcciones.');
+        res.redirect('/user/home');
+    }
+};
+
+// Agregar una nueva dirección
+exports.addAddress = async (req, res) => {
+    const userId = req.session.user.id;
+    const { name, description } = req.body;
+
+    try {
+        await Address.create({
+            user_id: userId,
+            name,
+            description
+        });
+
+        req.flash('success_msg', 'Dirección agregada exitosamente.');
+        res.redirect('/user/direcciones');
+    } catch (error) {
+        console.error('Error al agregar la dirección:', error);
+        req.flash('error_msg', 'Error al agregar la dirección.');
+        res.redirect('/user/direcciones');
+    }
+};
+
+// Eliminar una dirección
+exports.deleteAddress = async (req, res) => {
+    const userId = req.session.user.id;
+    const addressId = req.params.id;
+
+    try {
+        const address = await Address.findOne({
+            where: { id: addressId, user_id: userId }
+        });
+
+        if (!address) {
+            req.flash('error_msg', 'Dirección no encontrada.');
+            return res.status(404).redirect('/user/direcciones');
+        }
+
+        await address.destroy();
+        req.flash('success_msg', 'Dirección eliminada exitosamente.');
+        res.redirect('/user/direcciones');
+    } catch (error) {
+        console.error('Error al eliminar la dirección:', error);
+        req.flash('error_msg', 'Error al eliminar la dirección.');
+        res.status(500).redirect('/user/direcciones');
+    }
+};
+
+// Obtener la página para editar una dirección
+exports.editAddressPage = async (req, res) => {
+    const userId = req.session.user.id;
+    const addressId = req.params.id;
+
+    try {
+        const address = await Address.findOne({
+            where: { id: addressId, user_id: userId }
+        });
+
+        if (!address) {
+            req.flash('error_msg', 'Dirección no encontrada.');
+            return res.status(404).redirect('/user/direcciones');
+        }
+
+        res.render('clienteViews/editarDireccion', {
+            address,
+            success_msg: req.flash('success_msg'),
+            error_msg: req.flash('error_msg')
+        });
+    } catch (error) {
+        console.error('Error al obtener la dirección para editar:', error);
+        req.flash('error_msg', 'Error al obtener la dirección.');
+        res.redirect('/user/direcciones');
+    }
+};
+
+// Actualizar una dirección
+exports.updateAddress = async (req, res) => {
+    const userId = req.session.user.id;
+    const addressId = req.params.id;
+    const { name, description } = req.body;
+
+    try {
+        const address = await Address.findOne({
+            where: { id: addressId, user_id: userId }
+        });
+
+        if (!address) {
+            req.flash('error_msg', 'Dirección no encontrada.');
+            return res.status(404).redirect('/user/direcciones');
+        }
+
+        await address.update({ name, description });
+        req.flash('success_msg', 'Dirección actualizada exitosamente.');
+        res.redirect('/user/direcciones');
+    } catch (error) {
+        console.error('Error al actualizar la dirección:', error);
+        req.flash('error_msg', 'Error al actualizar la dirección.');
+        res.redirect('/user/direcciones');
     }
 };

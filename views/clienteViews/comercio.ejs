@@ -89,6 +89,58 @@
         .back-button:hover {
             background-color: #c0392b;
         }
+
+        .cart {
+            margin-top: 2rem;
+        }
+
+        .cart ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .cart li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart li span {
+            flex: 1;
+        }
+
+        .cart li form {
+            display: inline;
+        }
+
+        .cart-total {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .cart-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .cart-buttons a,
+        .cart-buttons button {
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cart-buttons a:hover,
+        .cart-buttons button:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
@@ -102,35 +154,56 @@
             <li><a href="/user/logout">Cerrar sesión</a></li>
         </ul>
     </nav>
-    
-<!-- views/clienteViews/comercio.ejs -->
 
-<div class="container">
-    <h2><%= business.business_name %></h2>
+    <div class="container">
+        <h2><%= business.business_name %></h2>
 
-    <!-- Mostrar categorías y productos -->
-    <% categories.forEach(function(category) { %>
-        <h3><%= category.name %></h3>
-        <div class="products">
-            <% category.products.forEach(function(product) { %>
-                <div class="product">
-                    <img src="/ImagesRepo/<%= product.image %>" alt="<%= product.name %>">
-                    <h4><%= product.name %></h4>
-                    <p><%= product.description %></p>
-                    <p>Precio: $<%= product.price %></p>
-                    <form action="/cart/add" method="POST">
-                        <input type="hidden" name="product_id" value="<%= product.id %>">
-                        <button type="submit">Agregar al Carrito</button>
-                    </form>
-                </div>
-            <% }); %>
+        <!-- Mostrar categorías y productos -->
+        <% categories.forEach(function(category) { %>
+            <h3><%= category.name %></h3>
+            <div class="products">
+                <% category.products.forEach(function(product) { %>
+                    <div class="product">
+                        <img src="/ImagesRepo/<%= product.image %>" alt="<%= product.name %>">
+                        <h4><%= product.name %></h4>
+                        <p><%= product.description %></p>
+                        <p>Precio: $<%= product.price %></p>
+                        <form action="/cart/add" method="POST">
+                            <input type="hidden" name="product_id" value="<%= product.id %>">
+                            <% if (cart.items.some(item => item.product.id === product.id)) { %>
+                                <button type="submit" disabled>Agregado</button>
+                            <% } else { %>
+                                <button type="submit">Agregar al Carrito</button>
+                            <% } %>
+                        </form>
+                    </div>
+                <% }); %>
+            </div>
+        <% }); %>
+
+        <!-- Carrito de compras -->
+        <div class="cart">
+            <h3>Mi Pedido</h3>
+            <ul>
+                <% cart.items.forEach(item => { %>
+                    <li>
+                        <span><%= item.product.name %></span>
+                        <span>$<%= item.product.price %></span>
+                        <form action="/cart/remove" method="POST">
+                            <input type="hidden" name="productId" value="<%= item.product.id %>">
+                            <button type="submit">Quitar</button>
+                        </form>
+                    </li>
+                <% }) %>
+            </ul>
+            <p class="cart-total">Subtotal: $<%= cart.total %></p>
+            <p class="cart-total">ITBIS (<%= taxRate %>%): $<%= (cart.total * taxRate / 100).toFixed(2) %></p>
+            <p class="cart-total">Total: $<%= (cart.total * (1 + taxRate / 100)).toFixed(2) %></p>
+            <div class="cart-buttons">
+                <a href="/checkout">Continuar</a>
+                <a href="/user/comercios/<%= business.business_type_id %>">Volver a comercios</a>
+            </div>
         </div>
-    <% }); %>
-
-    <!-- Carrito de compras -->
-    <!-- Aquí puedes agregar la lógica para mostrar el carrito si es necesario -->
-
-    <a href="/user/comercios/<%= business.business_type_id %>" class="back-button">Volver</a>
-</div>
+    </div>
 </body>
 </html>
