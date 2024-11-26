@@ -2,17 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { isAuthenticated, hasRole } = require('../middleware/authMiddleware');
 const businessesController = require('../controllers/businessesController');
+const userController = require('../controllers/userController');
 
 // Ruta para la página de inicio del cliente
-router.get('/home', isAuthenticated, hasRole('client'), async (req, res) => {
-    try {
-        const businesses = await businessesController.getBusinesses();
-        res.render('clienteViews/home', { user: req.session.user, businesses });
-    } catch (error) {
-        console.error('Error fetching businesses:', error);
-        res.status(500).send('Error fetching businesses');
-    }
-});
+router.get('/home', isAuthenticated, hasRole('client'), userController.getBusinessTypes);
+
 
 // Ruta para el perfil del usuario
 router.get('/perfil', isAuthenticated, hasRole('client'), (req, res) => {
@@ -44,5 +38,16 @@ router.get('/logout', (req, res) => {
         res.redirect('/auth/login');
     });
 });
+
+
+// Ruta para obtener los comercios por tipo
+router.get('/comercios/:typeId', isAuthenticated, hasRole('client'), userController.getBusinessesByType);
+
+// Ruta para buscar comercios por nombre
+router.get('/comercios/:typeId/buscar', isAuthenticated, hasRole('client'), userController.searchBusinessesByName);
+
+// Ruta para obtener los detalles de un comercio
+router.get('/comercio/:business_id', userController.getBusinessDetails);
+
 
 module.exports = router;

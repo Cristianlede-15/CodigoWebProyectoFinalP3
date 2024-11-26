@@ -329,3 +329,27 @@ exports.deleteProduct = async (req, res) => {
         res.status(500).send('Error Interno del Servidor');
     }
 };
+
+
+exports.updateProfile = async (req, res) => {
+    const businessId = req.session.user.businessId;
+    const { business_name, address, phone, email } = req.body;
+
+    try {
+        const business = await Business.findByPk(businessId);
+        if (!business) {
+            return res.status(404).send('Negocio no encontrado');
+        }
+
+        business.business_name = business_name;
+        business.address = address;
+        business.phone = phone;
+        business.email = email;
+
+        await business.save();
+        res.redirect('/business/perfil');
+    } catch (error) {
+        console.error('Error al actualizar el perfil:', error);
+        res.status(500).send('Error Interno del Servidor');
+    }
+};

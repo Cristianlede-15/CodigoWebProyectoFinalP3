@@ -83,15 +83,17 @@
     
     <div class="container">
         <h2>Tipos de Comercios</h2>
-        <% if (businesses.length > 0) { %>
-            <% businesses.forEach(function(business) { %>
+        <% if (businessTypes.length > 0) { %>
+            <% businessTypes.forEach(function(businessType) { %>
                 <div class="business-type">
-                    <img src="<%= business.logo %>" alt="Icono">
-                    <span><%= business.business_name %></span>
+                    <a href="/user/comercios/<%= businessType.id %>">
+                        <img src="<%= businessType.icon %>" alt="Icono">
+                        <span><%= businessType.name %></span>
+                    </a>
                 </div>
             <% }); %>
         <% } else { %>
-            <p>No hay negocios disponibles en este momento.</p>
+            <p>No hay tipos de comercios disponibles en este momento.</p>
         <% } %>
     </div>
 </body>

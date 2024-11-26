@@ -9,6 +9,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 const session = require('express-session');
 const upload = require('./config/multerConfig'); 
+const favoriteRoutes = require('./routes/favoriteRoutes');
+
 
 
 
@@ -24,17 +26,8 @@ const Orders = require('./models/Orders');
 const OrderDetails = require('./models/OrderDetails');
 const DeliveryStatus = require('./models/DeliveryStatus');
 
-// // En tu archivo server.js o en un script separado
-// sequelize.sync({ alter: true })
-//     .then(() => {
-//         console.log('Modelos sincronizados correctamente.');
-//     })
-//     .catch(err => {
-//         console.error('Error al sincronizar los modelos:', err);
-//     });
-
 // Configuración de la base de datos
-const dbPath = path.join(path.dirname(require.main.filename), 'DataBase', 'AppDb.sqlite');
+const dbPath = path.join(path.dirname(require.main.filename), 'DataBase', 'AppCenarDb.sqlite');
 if (!fs.existsSync(dbPath)) {
     sequelize.sync({ alter: true }).then(() => {
         console.log('Database & tables created!');
@@ -91,6 +84,14 @@ Products.hasMany(OrderDetails, { foreignKey: 'product_id' });
 OrderDetails.belongsTo(Products, { foreignKey: 'product_id' });
 Users.hasOne(DeliveryStatus, { foreignKey: 'user_id' });
 DeliveryStatus.belongsTo(Users, { foreignKey: 'user_id' });
+// Definir las relaciones para favoritos
+Users.belongsToMany(Business, { through: Favorites, foreignKey: 'user_id', otherKey: 'business_id' });
+Business.belongsToMany(Users, { through: Favorites, foreignKey: 'business_id', otherKey: 'user_id' });
+
+Favorites.belongsTo(Users, { foreignKey: 'user_id', as: 'user' });
+Favorites.belongsTo(Business, { foreignKey: 'business_id', as: 'business' });
+
+
 
 // Middleware
 app.use(express.json());
@@ -111,6 +112,10 @@ app.use(
 // Importar y usar las rutas de autenticación
 const authRoutes = require('./routes/authRoutes');
 app.use('/auth', authRoutes);
+
+// Importar y usar las rutas de favoritos
+app.use('/favorites', favoriteRoutes);
+
 
 // Importar y usar las rutas de usuario
 const userRoutes = require('./routes/UserRoutes');

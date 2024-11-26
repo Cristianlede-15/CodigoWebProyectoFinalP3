@@ -1,3 +1,4 @@
+<!-- views/comerciosViews/perfil.ejs -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -82,11 +83,11 @@
     </nav>
     <div class="profile-container">
         <h2>Perfil del Comercio</h2>
-        <form>
-            <input type="text" placeholder="Nombre del comercio" required>
-            <input type="text" placeholder="Dirección" required>
-            <input type="tel" placeholder="Teléfono" required>
-            <input type="email" placeholder="Email" required>
+        <form action="/business/perfil" method="POST">
+            <input type="text" name="business_name" placeholder="Nombre del comercio" value="<%= user.business_name %>" required>
+            <input type="text" name="address" placeholder="Dirección" value="<%= user.address %>" required>
+            <input type="tel" name="phone" placeholder="Teléfono" value="<%= user.phone %>" required>
+            <input type="email" name="email" placeholder="Email" value="<%= user.email %>" required>
             <button type="submit">Guardar cambios</button>
         </form>
     </div>
