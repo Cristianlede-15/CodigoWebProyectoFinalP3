@@ -4,6 +4,9 @@ const Business = require('../models/Business');
 const BusinessType = require('../models/BusinessTypes');
 const { Op } = require('sequelize');
 const Favorites = require('../models/Favorites'); // Ajusta la ruta según sea necesario
+const Categories = require('../models/Categories');
+const Products = require('../models/Product');
+
 
 
 // Controlador para obtener entregas (usuarios con rol 'delivery')
@@ -84,16 +87,16 @@ exports.getBusinessTypes = async (req, res) => {
 
 // Función para obtener los comercios por tipo
 exports.getBusinessesByType = async (req, res) => {
-    const typeId = req.params.typeId;
+    const { typeId } = req.params;
     const user_id = req.session.user.id;
 
     try {
-        // Obtener los negocios por tipo
         const businesses = await Business.findAll({
-            where: { business_type_id: typeId }
+            where: { business_type_id: typeId },
+            attributes: ['id', 'business_name', 'logo']
         });
 
-        // Obtener los IDs de los negocios que son favoritos del usuario
+        // Obtener los IDs de los negocios favoritos
         const favoriteBusinesses = await Favorites.findAll({
             where: { user_id },
             attributes: ['business_id']
@@ -103,19 +106,21 @@ exports.getBusinessesByType = async (req, res) => {
         res.render('clienteViews/comercios', {
             businesses,
             typeId,
-            favoriteBusinessIds // Pasar los IDs de los favoritos a la vista
+            favoriteBusinessIds
         });
     } catch (error) {
         console.error('Error al obtener los negocios:', error);
         res.status(500).send('Error al obtener los negocios');
     }
 };
-
 // Función para buscar comercios por nombre
 exports.searchBusinessesByName = async (req, res) => {
     const { typeId } = req.params;
     const { nombre } = req.query;
+    const user_id = req.session.user.id;
+
     try {
+        // Buscar negocios que coincidan con el nombre y tipo
         const businesses = await Business.findAll({
             where: {
                 business_type_id: typeId,
@@ -125,10 +130,23 @@ exports.searchBusinessesByName = async (req, res) => {
             },
             attributes: ['id', 'business_name', 'logo']
         });
-        res.render('clienteViews/comercios', { user: req.session.user, businesses, typeId });
+
+        // Obtener los IDs de los negocios favoritos del usuario
+        const favoriteBusinesses = await Favorites.findAll({
+            where: { user_id },
+            attributes: ['business_id']
+        });
+        const favoriteBusinessIds = favoriteBusinesses.map(fav => fav.business_id);
+
+        // Renderizar la vista pasando los datos necesarios
+        res.render('clienteViews/comercios', {
+            businesses,
+            typeId,
+            favoriteBusinessIds
+        });
     } catch (error) {
-        console.error('Error searching businesses by name:', error);
-        res.status(500).send('Error searching businesses by name');
+        console.error('Error al buscar negocios por nombre:', error);
+        res.status(500).send('Error al buscar negocios por nombre');
     }
 };
 
@@ -146,18 +164,29 @@ exports.getBusinessDetails = async (req, res) => {
             return res.status(404).send('Comercio no encontrado');
         }
 
+        // Obtener las categorías y sus productos del negocio
+        const categories = await Categories.findAll({
+            where: { business_id: business.id },
+            include: [{
+                model: Products,
+                as: 'products'
+            }]
+        });
+
+        // Verificar si es favorito
         const favorite = await Favorites.findOne({
-            where: {
-                user_id,
-                business_id
-            }
+            where: { user_id, business_id: business.id }
         });
 
         const isFavorite = !!favorite;
 
-        res.render('clienteViews/comercio', { user: req.session.user, business, isFavorite });
+        res.render('clienteViews/comercio', {
+            business,
+            categories,
+            isFavorite
+        });
     } catch (error) {
-        console.error('Error fetching business details:', error);
-        res.status(500).send('Error fetching business details');
+        console.error('Error al obtener detalles del negocio:', error);
+        res.status(500).send('Error al obtener detalles del negocio');
     }
 };

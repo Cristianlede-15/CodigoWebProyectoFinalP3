@@ -56,40 +56,62 @@ app.set('views', path.join(__dirname, 'views'));
 
 
 // Definir relaciones entre los modelos
-Users.hasOne(Business, { foreignKey: 'user_id' });
-Business.belongsTo(Users, { foreignKey: 'user_id' });
-Business.belongsTo(BusinessTypes, { foreignKey: 'business_type_id' });
-BusinessTypes.hasMany(Business, { foreignKey: 'business_type_id' });
+
+// Usuario y Negocio
+Users.hasOne(Business, { foreignKey: 'user_id', as: 'business' });
+Business.belongsTo(Users, { foreignKey: 'user_id', as: 'owner' });
+
+// Negocio y Tipo de Negocio
+Business.belongsTo(BusinessTypes, { foreignKey: 'business_type_id', as: 'businessType' });
+BusinessTypes.hasMany(Business, { foreignKey: 'business_type_id', as: 'businesses' });
+
+// Negocio y Categorías
 Business.hasMany(Categories, { foreignKey: 'business_id', as: 'categories' });
 Categories.belongsTo(Business, { foreignKey: 'business_id', as: 'business' });
-Business.hasMany(Products, { foreignKey: 'business_id' });
-Products.belongsTo(Business, { foreignKey: 'business_id' });
+
+// Categorías y Productos
 Categories.hasMany(Products, { foreignKey: 'category_id', as: 'products' });
 Products.belongsTo(Categories, { foreignKey: 'category_id', as: 'category' });
-Users.hasMany(Addresses, { foreignKey: 'user_id' });
-Addresses.belongsTo(Users, { foreignKey: 'user_id' });
-Users.belongsToMany(Business, { through: Favorites, foreignKey: 'user_id' });
-Business.belongsToMany(Users, { through: Favorites, foreignKey: 'business_id' });
-Users.hasMany(Orders, { as: 'orders', foreignKey: 'user_id' });
-Orders.belongsTo(Users, { foreignKey: 'user_id' });
-Business.hasMany(Orders, { as: 'orders', foreignKey: 'business_id' });
-Orders.belongsTo(Business, { foreignKey: 'businessId', as: 'business' });
-Addresses.hasMany(Orders, { foreignKey: 'address_id' });
-Orders.belongsTo(Addresses, { foreignKey: 'address_id' });
-Users.hasMany(Orders, { foreignKey: 'delivery_id' });
-Orders.belongsTo(Users, { foreignKey: 'delivery_id' });
-Orders.hasMany(OrderDetails, { foreignKey: 'order_id' });
-OrderDetails.belongsTo(Orders, { foreignKey: 'order_id' });
-Products.hasMany(OrderDetails, { foreignKey: 'product_id' });
-OrderDetails.belongsTo(Products, { foreignKey: 'product_id' });
-Users.hasOne(DeliveryStatus, { foreignKey: 'user_id' });
-DeliveryStatus.belongsTo(Users, { foreignKey: 'user_id' });
-// Definir las relaciones para favoritos
-Users.belongsToMany(Business, { through: Favorites, foreignKey: 'user_id', otherKey: 'business_id' });
-Business.belongsToMany(Users, { through: Favorites, foreignKey: 'business_id', otherKey: 'user_id' });
 
+// Negocio y Productos
+Business.hasMany(Products, { foreignKey: 'business_id', as: 'products' });
+Products.belongsTo(Business, { foreignKey: 'business_id', as: 'business' });
+
+// Usuarios y Direcciones
+Users.hasMany(Addresses, { foreignKey: 'user_id', as: 'addresses' });
+Addresses.belongsTo(Users, { foreignKey: 'user_id', as: 'user' });
+
+// Usuarios y Negocios (Favoritos)
+Users.belongsToMany(Business, { through: Favorites, foreignKey: 'user_id', otherKey: 'business_id', as: 'favoriteBusinesses' });
+Business.belongsToMany(Users, { through: Favorites, foreignKey: 'business_id', otherKey: 'user_id', as: 'favoritedByUsers' });
+
+// Favoritos pertenecen a Usuarios y Negocios
 Favorites.belongsTo(Users, { foreignKey: 'user_id', as: 'user' });
 Favorites.belongsTo(Business, { foreignKey: 'business_id', as: 'business' });
+
+// Usuarios y Órdenes
+Users.hasMany(Orders, { foreignKey: 'user_id', as: 'orders' });
+Orders.belongsTo(Users, { foreignKey: 'user_id', as: 'customer' });
+
+// Negocio y Órdenes
+Business.hasMany(Orders, { foreignKey: 'business_id', as: 'orders' });
+Orders.belongsTo(Business, { foreignKey: 'business_id', as: 'business' });
+
+// Direcciones y Órdenes
+Addresses.hasMany(Orders, { foreignKey: 'address_id', as: 'orders' });
+Orders.belongsTo(Addresses, { foreignKey: 'address_id', as: 'address' });
+
+// Usuarios (repartidores) y Órdenes
+Users.hasMany(Orders, { foreignKey: 'delivery_id', as: 'deliveries' });
+Orders.belongsTo(Users, { foreignKey: 'delivery_id', as: 'deliverer' });
+
+// Órdenes y Detalles de Órdenes
+Orders.hasMany(OrderDetails, { foreignKey: 'order_id', as: 'orderDetails' });
+OrderDetails.belongsTo(Orders, { foreignKey: 'order_id', as: 'order' });
+
+// Productos y Detalles de Órdenes
+Products.hasMany(OrderDetails, { foreignKey: 'product_id', as: 'orderDetails' });
+OrderDetails.belongsTo(Products, { foreignKey: 'product_id', as: 'product' });
 
 
 
@@ -115,6 +137,12 @@ app.use('/auth', authRoutes);
 
 // Importar y usar las rutas de favoritos
 app.use('/favorites', favoriteRoutes);
+
+
+const cartRoutes = require('./routes/cartRoutes'); // Importar las rutas del carrito
+app.use('/favorites', favoriteRoutes);
+app.use('/', cartRoutes); // Usar las rutas del carrito
+
 
 
 // Importar y usar las rutas de usuario

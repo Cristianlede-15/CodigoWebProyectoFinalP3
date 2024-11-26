@@ -103,28 +103,34 @@
         </ul>
     </nav>
     
-    <div class="container">
-        <h2>Detalles del Comercio</h2>
-        <div class="business-details">
-            <img src="<%= business.logo %>" alt="Logo">
-            <span><%= business.business_name %></span>
-            <p>Teléfono: <%= business.phone %></p>
-            <p>Email: <%= business.email %></p>
-            <p>Horario: <%= business.opening_time %> - <%= business.closing_time %></p>
-            
-            <% if (isFavorite) { %>
-                <form action="/favorites/eliminar" method="POST">
-                    <input type="hidden" name="business_id" value="<%= business.id %>">
-                    <button type="submit" class="favorite-button">Eliminar Favorito</button>
-                </form>
-            <% } else { %>
-                <form action="/favorites/marcar" method="POST">
-                    <input type="hidden" name="business_id" value="<%= business.id %>">
-                    <button type="submit" class="favorite-button">Marcar como Favorito</button>
-                </form>
-            <% } %>
+<!-- views/clienteViews/comercio.ejs -->
+
+<div class="container">
+    <h2><%= business.business_name %></h2>
+
+    <!-- Mostrar categorías y productos -->
+    <% categories.forEach(function(category) { %>
+        <h3><%= category.name %></h3>
+        <div class="products">
+            <% category.products.forEach(function(product) { %>
+                <div class="product">
+                    <img src="/ImagesRepo/<%= product.image %>" alt="<%= product.name %>">
+                    <h4><%= product.name %></h4>
+                    <p><%= product.description %></p>
+                    <p>Precio: $<%= product.price %></p>
+                    <form action="/cart/add" method="POST">
+                        <input type="hidden" name="product_id" value="<%= product.id %>">
+                        <button type="submit">Agregar al Carrito</button>
+                    </form>
+                </div>
+            <% }); %>
         </div>
-        <a href="/user/comercios/<%= business.business_type_id %>" class="back-button">Volver</a>
-    </div>
+    <% }); %>
+
+    <!-- Carrito de compras -->
+    <!-- Aquí puedes agregar la lógica para mostrar el carrito si es necesario -->
+
+    <a href="/user/comercios/<%= business.business_type_id %>" class="back-button">Volver</a>
+</div>
 </body>
 </html>
