@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { isAuthenticated, hasRole } = require('../middleware/authMiddleware');
 const userController = require('../controllers/userController');
+const favoriteController = require('../controllers/favoriteController'); // Importar el controlador de favoritos
 const upload = require('../config/multerConfig'); // Asegúrate de la ruta correcta
 
 // Ruta para la página de inicio del cliente
@@ -26,9 +27,7 @@ router.get('/direcciones', isAuthenticated, hasRole('client'), (req, res) => {
 });
 
 // Ruta para los favoritos del usuario
-router.get('/favoritos', isAuthenticated, hasRole('client'), (req, res) => {
-    res.render('clienteViews/favoritos', { user: req.session.user });
-});
+router.get('/favoritos', isAuthenticated, hasRole('client'), favoriteController.getUserFavorites);
 
 // Ruta para cerrar sesión
 router.get('/logout', (req, res) => {

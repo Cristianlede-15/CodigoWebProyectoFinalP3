@@ -11,4 +11,7 @@ router.post('/marcar', isAuthenticated, hasRole('client'), favoriteController.ma
 // Ruta para eliminar un comercio de favoritos
 router.post('/eliminar', isAuthenticated, hasRole('client'), favoriteController.removeFavorite);
 
+// Ruta para obtener y mostrar los favoritos del usuario
+router.get('/favoritos', isAuthenticated, hasRole('client'), favoriteController.getUserFavorites);
+
 module.exports = router;

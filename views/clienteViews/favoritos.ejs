@@ -1,3 +1,4 @@
+<!-- views/clienteViews/favoritos.ejs -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -54,6 +55,7 @@
             border-radius: 8px;
             margin-right: 1rem;
             object-fit: cover;
+            cursor: pointer;
         }
 
         .favorite-info p {
@@ -63,6 +65,10 @@
         }
 
         /* Botones de acciones */
+        .favorite-actions form {
+            display: inline;
+        }
+
         .favorite-actions button {
             background-color: #333;
             color: white;
@@ -78,6 +84,13 @@
             background-color: #ff0000;
             color: white;
             transform: scale(1.1);
+        }
+
+        /* Mensaje cuando no hay favoritos */
+        .no-favorites {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -95,25 +108,28 @@
     
     <div class="favorites-container">
         <h2>Mis Favoritos</h2>
-        <div class="favorite">
-            <img src="path/to/logo1.png" alt="Logo Comercio">
-            <div class="favorite-info">
-                <p>Comercio 1</p>
-            </div>
-            <div class="favorite-actions">
-                <button>Eliminar</button>
-            </div>
-        </div>
-        <div class="favorite">
-            <img src="path/to/logo2.png" alt="Logo Comercio">
-            <div class="favorite-info">
-                <p>Comercio 2</p>
-            </div>
-            <div class="favorite-actions">
-                <button>Eliminar</button>
-            </div>
-        </div>
-        <!-- Agrega más comercios favoritos según sea necesario -->
+        <% if (!favorites || favorites.length === 0) { %>
+            <p class="no-favorites">No tienes comercios favoritos.</p>
+        <% } else { %>
+            <% favorites.forEach(business => { %>
+                <div class="favorite">
+                    <!-- Enlazar la imagen al catálogo de productos -->
+                    <a href="/user/comercio/<%= business.id %>">
+                        <img src="<%= business.logo ? business.logo : '/path/to/default/logo.png' %>" alt="Logo Comercio">
+                    </a>
+                    <div class="favorite-info">
+                        <p><%= business.business_name %></p>
+                    </div>
+                    <div class="favorite-actions">
+                        <!-- Formulario para eliminar favorito -->
+                        <form action="/user/favoritos/eliminar" method="POST">
+                            <input type="hidden" name="business_id" value="<%= business.id %>">
+                            <button type="submit">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
     </div>
 </body>
 </html>
