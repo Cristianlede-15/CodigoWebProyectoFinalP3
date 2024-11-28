@@ -25,6 +25,7 @@ const Favorites = require('./models/Favorites');
 const Orders = require('./models/Orders');
 const OrderDetails = require('./models/OrderDetails');
 const DeliveryStatus = require('./models/DeliveryStatus');
+const Product = require('./models/Product');
 
 // Configuración de la base de datos
 const dbPath = path.join(path.dirname(require.main.filename), 'DataBase', 'CenarDb.sqlite');
@@ -126,7 +127,21 @@ DeliveryStatus.hasMany(Orders, { foreignKey: 'deliveryStatusId', as: 'orders' })
 Users.hasOne(DeliveryStatus, { foreignKey: 'user_id', as: 'deliveryStatus' });
 DeliveryStatus.belongsTo(Users, { foreignKey: 'user_id', as: 'user' });
 
+// Relación Muchos a Muchos entre Orders y Products a través de OrderDetails
+Orders.belongsToMany(Product, { // Cambiado de Products a Product
+    through: OrderDetails,
+    foreignKey: 'order_id',
+    otherKey: 'product_id',
+    as: 'products' // Alias para usar en las consultas
+});
 
+Product.belongsToMany(Orders, { // Asegurado el uso consistente de Product
+    through: OrderDetails,
+    foreignKey: 'product_id',
+    otherKey: 'order_id',
+    as: 'orders' // Alias para usar en las consultas
+});
+  
 
 
 
@@ -183,6 +198,15 @@ app.use('/business', businessRoutes);
 app.get('/', (req, res) => {
     res.redirect('/auth/login');
 });
+
+// Sincronizar la base de datos después de definir las asociaciones
+/* sequelize.sync()
+  .then(() => {
+    console.log('Base de datos sincronizada con todas las asociaciones definidas.');
+  })
+  .catch(err => {
+    console.error('Error al sincronizar la base de datos:', err);
+  }); */
 
 app.listen(port, () => {
     console.log(`http://localhost:${port}`);

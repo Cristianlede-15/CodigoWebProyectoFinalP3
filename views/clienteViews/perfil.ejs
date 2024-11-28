@@ -103,7 +103,7 @@
         <% if (user.profile_image) { %>
             <img src="<%= user.profile_image %>" alt="Foto de perfil" class="profile-image">
         <% } else { %>
-            <img src="/images/default-profile.png" alt="Foto de perfil" class="profile-image">
+            <img src="/ImagesRepo/default-profile.png" alt="Foto de perfil" class="profile-image">
         <% } %>
         <form action="/user/perfil/edit" method="POST" enctype="multipart/form-data">
             <input type="text" name="first_name" placeholder="Nombre" value="<%= user.first_name %>" required>
@@ -111,8 +111,10 @@
             <input type="tel" name="phone" placeholder="Teléfono" value="<%= user.phone %>" required>
             <label for="profile_image">Foto de usuario (opcional):</label>
             <input type="file" name="profile_image" accept="image/*">
-            <button type="submit" class="save-button">Guardar cambios</button>
-            <button type="button" class="back-button" onclick="window.location.href='/user/home'">Volver al Home</button>
+            <div style="display: flex; justify-content: space-between;">
+                <button type="button" class="back-button" onclick="window.location.href='/user/home'">Volver al Home</button>
+                <button type="submit" class="save-button">Guardar cambios</button>
+            </div>
         </form>
     </div>
 </body>

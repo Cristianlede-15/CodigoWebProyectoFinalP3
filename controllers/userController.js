@@ -8,6 +8,7 @@ const Categories = require('../models/Categories');
 const Products = require('../models/Product');
 const Configuracion = require('../models/Configuracion');
 const Address = require('../models/Adresses'); // Ajusta la ruta según sea necesario
+const Product = require('../models/Product');
 
 // Controlador para obtener entregas (usuarios con rol 'delivery')
 exports.getDeliveries = async (req, res) => {
@@ -374,14 +375,16 @@ exports.updateProfile = async (req, res) => {
         if (req.file) {
             // Eliminar la imagen anterior si existe
             if (user.profile_image) {
-                const oldImagePath = path.join(__dirname, '../public', user.profile_image);
+                const oldImagePath = path.join(__dirname, '..', 'ImagesRepo', path.basename(user.profile_image));
                 if (fs.existsSync(oldImagePath)) {
                     fs.unlinkSync(oldImagePath);
                 }
             }
 
             // Guardar la nueva imagen
-            profile_image = `/uploads/${req.file.filename}`;
+            profile_image = `/ImagesRepo/${req.file.filename}`;
+        } else {
+            profile_image = user.profile_image;
         }
 
         // Actualizar los datos del usuario
@@ -392,9 +395,74 @@ exports.updateProfile = async (req, res) => {
             profile_image
         });
 
+        // Actualizar la sesión con nuevos datos
+        req.session.user = user;
+
         res.redirect('/user/perfil');
     } catch (error) {
         console.error('Error al actualizar el perfil del usuario:', error);
         res.status(500).send('Error al actualizar el perfil del usuario');
+    }
+};
+
+
+// Obtener todos los pedidos del usuario
+exports.getUserOrders = async (req, res) => {
+    const userId = req.session.user.id;
+    try {
+        const orders = await Order.findAll({
+            where: { user_id: userId },
+            include: [
+                {
+                    model: Business,
+                    as: 'business',
+                    attributes: ['business_name', 'logo'] // Incluye 'logo' aquí
+                },
+                {
+                    model: Product,
+                    as: 'products',
+                    through: { attributes: [] },
+                    attributes: ['name', 'price', 'image']
+                }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+        res.render('clienteViews/pedidos', { user: req.session.user, orders });
+    } catch (error) {
+        console.error('Error al obtener los pedidos del usuario:', error);
+        res.status(500).send('Error al obtener los pedidos del usuario');
+    }
+};
+
+// Obtener detalles de un pedido específico
+exports.getOrderDetails = async (req, res) => {
+    const userId = req.session.user.id;
+    const orderId = req.params.id;
+    try {
+        const order = await Order.findOne({
+            where: { id: orderId, user_id: userId },
+            include: [
+                {
+                    model: Business,
+                    as: 'business', // Asegúrate de que el alias es 'business' en minúsculas
+                    attributes: ['business_name', 'logo'] // Incluye 'logo' aquí también
+                },
+                {
+                    model: Product,
+                    as: 'products',
+                    through: { attributes: [] },
+                    attributes: ['name', 'price', 'image']
+                }
+            ]
+        });
+
+        if (!order) {
+            return res.status(404).send('Pedido no encontrado');
+        }
+
+        res.render('clienteViews/detallePedido', { user: req.session.user, order });
+    } catch (error) {
+        console.error('Error al obtener los detalles del pedido:', error);
+        res.status(500).send('Error al obtener los detalles del pedido');
     }
 };

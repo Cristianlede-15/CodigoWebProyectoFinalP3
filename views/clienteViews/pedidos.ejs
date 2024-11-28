@@ -1,3 +1,4 @@
+<!-- FILE: pedidos.ejs -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -69,7 +70,7 @@
 
         .order-info .status {
             font-weight: bold;
-            color: #007bff; /* Color azul para resaltar el estado */
+            color: #007bff;
         }
 
         /* Enlace para detalles */
@@ -104,29 +105,23 @@
     
     <div class="orders-container">
         <h2>Mis Pedidos</h2>
-        <div class="order">
-            <img src="path/to/logo1.png" alt="Logo Comercio">
-            <div class="order-info">
-                <p class="status">Estado: En proceso</p>
-                <p>Comercio: Comercio 1</p>
-                <p>Total: $50.00</p>
-                <p>Cantidad de productos: 3</p>
-                <p>Fecha y hora: 2024-11-14 14:00</p>
-            </div>
-            <a class="order-details-link" href="#">Ver detalles</a>
-        </div>
-        <div class="order">
-            <img src="path/to/logo2.png" alt="Logo Comercio">
-            <div class="order-info">
-                <p class="status">Estado: Completado</p>
-                <p>Comercio: Comercio 2</p>
-                <p>Total: $75.00</p>
-                <p>Cantidad de productos: 5</p>
-                <p>Fecha y hora: 2024-11-12 18:00</p>
-            </div>
-            <a class="order-details-link" href="#">Ver detalles</a>
-        </div>
-        <!-- Agrega más pedidos según sea necesario -->
+        <% if (orders.length === 0) { %>
+            <p>No tienes pedidos realizados.</p>
+        <% } else { %>
+            <% orders.forEach(order => { %>
+                <div class="order">
+                    <img src="<%= order.business.logo %>" alt="Logo Comercio">
+                    <div class="order-info">
+                        <p class="status">Estado: <%= order.status %></p>
+                        <p>Comercio: <%= order.business.business_name %></p>
+                        <p>Total: $<%= order.total.toFixed(2) %></p>
+                        <p>Cantidad de productos: <%= order.products.length %></p>
+                        <p>Fecha y hora: <%= order.createdAt.toLocaleString() %></p>
+                    </div>
+                    <a class="order-details-link" href="/user/pedidos/<%= order.id %>">Ver detalles</a>
+                </div>
+            <% }) %>
+        <% } %>
     </div>
 </body>
 </html>

@@ -1,28 +1,29 @@
+// FILE: UserRoutes.js
 const express = require('express');
 const router = express.Router();
 const { isAuthenticated, hasRole } = require('../middleware/authMiddleware');
-const businessesController = require('../controllers/businessesController');
 const userController = require('../controllers/userController');
+const upload = require('../config/multerConfig'); // Asegúrate de la ruta correcta
 
 // Ruta para la página de inicio del cliente
 router.get('/home', isAuthenticated, hasRole('client'), userController.getBusinessTypes);
 
+// Ruta para mostrar el perfil del usuario
+router.get('/perfil', isAuthenticated, hasRole('client'), userController.showProfile);
 
-// Ruta para el perfil del usuario
-router.get('/perfil', isAuthenticated, hasRole('client'), (req, res) => {
-    res.render('clienteViews/perfil', { user: req.session.user });
-});
+// Ruta para editar el perfil del usuario
+router.post('/perfil/edit', isAuthenticated, hasRole('client'), upload.single('profile_image'), userController.updateProfile);
 
 // Ruta para los pedidos del usuario
-router.get('/pedidos', isAuthenticated, hasRole('client'), (req, res) => {
-    res.render('clienteViews/pedidos', { user: req.session.user });
-});
+router.get('/pedidos', isAuthenticated, hasRole('client'), userController.getUserOrders);
+
+// Ruta para los detalles de un pedido
+router.get('/pedidos/:id', isAuthenticated, hasRole('client'), userController.getOrderDetails);
 
 // Ruta para las direcciones del usuario
 router.get('/direcciones', isAuthenticated, hasRole('client'), (req, res) => {
     res.render('clienteViews/direcciones', { user: req.session.user });
 });
-
 
 // Ruta para los favoritos del usuario
 router.get('/favoritos', isAuthenticated, hasRole('client'), (req, res) => {
@@ -40,7 +41,6 @@ router.get('/logout', (req, res) => {
     });
 });
 
-
 // Ruta para obtener los comercios por tipo
 router.get('/comercios/:typeId', isAuthenticated, hasRole('client'), userController.getBusinessesByType);
 
@@ -49,6 +49,5 @@ router.get('/comercios/:typeId/buscar', isAuthenticated, hasRole('client'), user
 
 // Ruta para obtener los detalles de un comercio
 router.get('/comercio/:business_id', userController.getBusinessDetails);
-
 
 module.exports = router;
