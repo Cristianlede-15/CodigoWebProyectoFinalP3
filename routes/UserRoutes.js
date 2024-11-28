@@ -23,6 +23,7 @@ router.get('/direcciones', isAuthenticated, hasRole('client'), (req, res) => {
     res.render('clienteViews/direcciones', { user: req.session.user });
 });
 
+
 // Ruta para los favoritos del usuario
 router.get('/favoritos', isAuthenticated, hasRole('client'), (req, res) => {
     res.render('clienteViews/favoritos', { user: req.session.user });

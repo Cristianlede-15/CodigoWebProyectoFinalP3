@@ -27,7 +27,7 @@ const OrderDetails = require('./models/OrderDetails');
 const DeliveryStatus = require('./models/DeliveryStatus');
 
 // Configuración de la base de datos
-const dbPath = path.join(path.dirname(require.main.filename), 'DataBase', 'AppCenarDb.sqlite');
+const dbPath = path.join(path.dirname(require.main.filename), 'DataBase', 'BaseDatos.sqlite');
 if (!fs.existsSync(dbPath)) {
     sequelize.sync({ alter: true }).then(() => {
         console.log('Database & tables created!');
@@ -57,7 +57,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Definir relaciones entre los modelos
 
-// Usuario y Negocio
+// Usuario y Negocio (Un usuario puede tener un negocio)
 Users.hasOne(Business, { foreignKey: 'user_id', as: 'business' });
 Business.belongsTo(Users, { foreignKey: 'user_id', as: 'owner' });
 
@@ -82,28 +82,30 @@ Users.hasMany(Addresses, { foreignKey: 'user_id', as: 'addresses' });
 Addresses.belongsTo(Users, { foreignKey: 'user_id', as: 'user' });
 
 // Usuarios y Negocios (Favoritos)
-Users.belongsToMany(Business, { through: Favorites, foreignKey: 'user_id', otherKey: 'business_id', as: 'favoriteBusinesses' });
-Business.belongsToMany(Users, { through: Favorites, foreignKey: 'business_id', otherKey: 'user_id', as: 'favoritedByUsers' });
+Users.belongsToMany(Business, {
+  through: Favorites,
+  foreignKey: 'user_id',
+  otherKey: 'business_id',
+  as: 'favoriteBusinesses'
+});
+Business.belongsToMany(Users, {
+  through: Favorites,
+  foreignKey: 'business_id',
+  otherKey: 'user_id',
+  as: 'favoritedByUsers'
+});
 
-// Favoritos pertenecen a Usuarios y Negocios
-Favorites.belongsTo(Users, { foreignKey: 'user_id', as: 'user' });
-Favorites.belongsTo(Business, { foreignKey: 'business_id', as: 'business' });
-
-// Usuarios y Órdenes
+// Usuarios y Órdenes (Un usuario puede tener muchas órdenes)
 Users.hasMany(Orders, { foreignKey: 'user_id', as: 'orders' });
 Orders.belongsTo(Users, { foreignKey: 'user_id', as: 'customer' });
 
-// Negocio y Órdenes
+// Negocio y Órdenes (Un negocio puede tener muchas órdenes)
 Business.hasMany(Orders, { foreignKey: 'business_id', as: 'orders' });
 Orders.belongsTo(Business, { foreignKey: 'business_id', as: 'business' });
 
-// Direcciones y Órdenes
+// Direcciones y Órdenes (Una dirección puede estar asociada a muchas órdenes)
 Addresses.hasMany(Orders, { foreignKey: 'address_id', as: 'orders' });
 Orders.belongsTo(Addresses, { foreignKey: 'address_id', as: 'address' });
-
-// Usuarios (repartidores) y Órdenes
-Users.hasMany(Orders, { foreignKey: 'delivery_id', as: 'deliveries' });
-Orders.belongsTo(Users, { foreignKey: 'delivery_id', as: 'deliverer' });
 
 // Órdenes y Detalles de Órdenes
 Orders.hasMany(OrderDetails, { foreignKey: 'order_id', as: 'orderDetails' });
@@ -113,6 +115,9 @@ OrderDetails.belongsTo(Orders, { foreignKey: 'order_id', as: 'order' });
 Products.hasMany(OrderDetails, { foreignKey: 'product_id', as: 'orderDetails' });
 OrderDetails.belongsTo(Products, { foreignKey: 'product_id', as: 'product' });
 
+// Usuarios (Repartidores) y Órdenes (Un repartidor puede tener muchas órdenes asignadas)
+Users.hasMany(Orders, { foreignKey: 'delivery_id', as: 'deliveries' });
+Orders.belongsTo(Users, { foreignKey: 'delivery_id', as: 'deliverer' });
 
 
 // Middleware

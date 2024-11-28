@@ -4,6 +4,7 @@ const Business = require('../models/Business');
 const Order = require('../models/Orders');
 const Category = require('../models/Categories');
 const Product = require('../models/Product');
+const OrderDetails = require('../models/OrderDetails');
 
 
 exports.getBusinesses = async () => {
@@ -47,7 +48,7 @@ exports.getBusinessesWithOrders = async () => {
 
 // Toggle business active status
 exports.toggleBusinessStatus = async (req, res) => {
-    const businessId = req.params.id;
+    const businessId = req.session.business_id; // Actualizado para usar business_id directamente
     try {
         const business = await Business.findByPk(businessId);
         if (!business) {
@@ -133,66 +134,98 @@ exports.deleteBusinessType = async (req, res) => {
     }
 };
 
-exports.getOrdersForBusiness = async (businessId) => {
-    try {
-        // Verificar que el businessId no sea undefined
-        if (!businessId) {
-            throw new Error('businessId es indefinido');
-        }
+// controllers/businessesController.js
 
-        // Obtener las órdenes asociadas al businessId
+exports.getOrdersForBusiness = async (req, res) => {
+    console.log('Contenido de la sesión:', req.session); // Verifica la sesión
+    const business_id = req.session.business_id; // Usar 'business_id'
+
+    if (!business_id) {
+        console.error('Business ID no encontrado en la sesión');
+        return res.status(400).send('No se ha seleccionado un negocio.');
+    }
+
+    try {
         const orders = await Order.findAll({
-            where: { businessId },
-            include: [{
-                model: Business,
-                as: 'business',
-                attributes: ['business_name', 'logo']
-            }],
+            where: { business_id: business_id },
+            include: [
+                {
+                    model: Business,
+                    as: 'business',
+                    attributes: ['business_name', 'logo']
+                },
+                {
+                    model: OrderDetails,
+                    as: 'orderDetails',
+                    include: [
+                        {
+                            model: Product,
+                            as: 'product',
+                            attributes: ['name', 'price']
+                        }
+                    ]
+                }
+            ],
             order: [['createdAt', 'DESC']]
         });
 
-        return orders.map(order => ({
+        const formattedOrders = orders.map(order => ({
             id: order.id,
             status: order.status,
+            subtotal: order.subtotal,
+            tax_rate: order.tax_rate,
             total: order.total,
             createdAt: order.createdAt,
             businessName: order.business.business_name,
             businessLogo: order.business.logo,
-            productCount: order.products ? order.products.length : 0 // Asegúrate de tener una asociación con productos
+            productCount: order.orderDetails ? order.orderDetails.length : 0
         }));
+
+        res.render('comerciosViews/home', { orders: formattedOrders });
     } catch (error) {
         console.error('Error fetching orders:', error);
-        throw new Error('Error fetching orders');
+        res.status(500).send('Error fetching orders');
     }
 };
 
-
-exports.getCategoriesForBusiness = async (businessId) => {
+exports.getCategoriesForBusiness = async (req, res) => {
     try {
+        console.log('Contenido de la sesión en getCategoriesForBusiness:', req.session);
+        const business_id = req.session.business_id;
+
+        if (!business_id) {
+            console.error('business_id no está definido en la sesión.');
+            return res.status(400).send('No se ha seleccionado un negocio.');
+        }
+
         const categories = await Category.findAll({
-            where: { business_id: businessId }, // Updated key
-            include: [{
-                model: Product,
-                as: 'products', // Ensure this alias matches your association
-                attributes: ['id']
-            }]
+            where: { business_id: business_id },
+            include: [
+                {
+                    model: Product,
+                    as: 'products',
+                    attributes: ['id', 'name', 'price']
+                }
+            ]
         });
 
-        return categories.map(category => ({
+        const categoriesWithCount = categories.map(category => ({
             id: category.id,
             name: category.name,
             description: category.description,
-            productCount: category.products.length // Updated to match alias
+            productCount: category.products.length
         }));
+
+        res.render('comerciosViews/categorias', { categories: categoriesWithCount });
     } catch (error) {
         console.error('Error fetching categories:', error);
-        throw new Error('Error fetching categories');
+        res.status(500).send('Error fetching categories');
     }
 };
 
 exports.createCategory = async (req, res) => {
     const { name, description } = req.body;
-    const businessId = req.session.user.businessId; // Asegúrate de que este campo exista en la sesión
+    const businessId = req.session.business_id; // Accede directamente a business_id
 
     if (!businessId) {
         return res.status(400).send('ID de negocio no encontrado en la sesión.');
@@ -208,7 +241,11 @@ exports.createCategory = async (req, res) => {
 };
 
 exports.getProducts = async (req, res) => {
-    const businessId = req.session.user.businessId;
+    const businessId = req.session.business_id; // Acceder correctamente
+    if (!businessId) {
+        console.error('Business ID no encontrado en la sesión.');
+        return res.status(400).send('No se ha seleccionado un negocio.');
+    }
     try {
         const products = await Product.findAll({
             where: { business_id: businessId },
@@ -228,7 +265,7 @@ exports.getProducts = async (req, res) => {
 // controllers/businessesController.js
 
 exports.renderCreateProductForm = async (req, res) => {
-    const businessId = req.session.user.businessId;
+    const businessId = req.session.business_id; // Actualizado para usar business_id directamente
 
     if (!businessId) {
         return res.status(400).send('ID de negocio no encontrado en la sesión.');
@@ -251,7 +288,7 @@ exports.renderCreateProductForm = async (req, res) => {
 
 exports.renderEditProductForm = async (req, res) => {
     const { id } = req.params;
-    const businessId = req.session.user.businessId;
+    const businessId = req.session.business_id; // Actualizado para usar business_id directamente
     try {
         const product = await Product.findOne({
             where: { id, business_id: businessId },
@@ -271,7 +308,7 @@ exports.renderEditProductForm = async (req, res) => {
 // controllers/businessesController.js
 exports.createProduct = async (req, res) => {
     const { name, price, category_id } = req.body;
-    const businessId = req.session.user.businessId;
+    const businessId = req.session.business_id; // Actualizado para usar business_id directamente
 
     if (!businessId) {
         return res.status(400).send('ID de negocio no encontrado en la sesión.');
@@ -295,7 +332,7 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
     const { id } = req.params;
     const { name, price, category_id } = req.body;
-    const businessId = req.session.user.businessId;
+    const businessId = req.session.business_id; // Actualizado para usar business_id directamente
 
     try {
         const product = await Product.findOne({ where: { id, business_id: businessId } });
@@ -315,7 +352,7 @@ exports.updateProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
     const { id } = req.params;
-    const businessId = req.session.user.businessId;
+    const businessId = req.session.business_id; // Actualizado para usar business_id directamente
 
     try {
         const product = await Product.findOne({ where: { id, business_id: businessId } });
@@ -332,7 +369,7 @@ exports.deleteProduct = async (req, res) => {
 
 
 exports.updateProfile = async (req, res) => {
-    const businessId = req.session.user.businessId;
+    const businessId = req.session.business_id; // Actualizado para usar business_id directamente
     const { business_name, address, phone, email } = req.body;
 
     try {

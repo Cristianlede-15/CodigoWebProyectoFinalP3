@@ -9,9 +9,6 @@ const Products = require('../models/Product');
 const Configuracion = require('../models/Configuracion');
 const Address = require('../models/Adresses'); // Ajusta la ruta según sea necesario
 
-
-
-
 // Controlador para obtener entregas (usuarios con rol 'delivery')
 exports.getDeliveries = async (req, res) => {
     try {
@@ -116,6 +113,7 @@ exports.getBusinessesByType = async (req, res) => {
         res.status(500).send('Error al obtener los negocios');
     }
 };
+
 // Función para buscar comercios por nombre
 exports.searchBusinessesByName = async (req, res) => {
     const { typeId } = req.params;
@@ -201,7 +199,6 @@ exports.getBusinessDetails = async (req, res) => {
     }
 };
 
-
 exports.selectAddress = async (req, res) => {
     const user_id = req.session.user.id;
     const cart = req.session.cart || { items: [], total: 0 };
@@ -211,6 +208,10 @@ exports.selectAddress = async (req, res) => {
         const business = await Business.findByPk(req.session.business_id, {
             attributes: ['id', 'business_name', 'logo']
         });
+
+        if (!business) {
+            return res.status(404).send('Comercio no encontrado');
+        }
 
         // Obtener la configuración de ITBIS
         const configuracion = await Configuracion.findOne();
@@ -238,14 +239,11 @@ exports.getUserAddresses = async (req, res) => {
         });
 
         res.render('clienteViews/direcciones', {
-            addresses,
-            success_msg: req.flash('success_msg'),
-            error_msg: req.flash('error_msg')
+            addresses
         });
     } catch (error) {
         console.error('Error al obtener las direcciones del usuario:', error);
-        req.flash('error_msg', 'Error al obtener las direcciones.');
-        res.redirect('/user/home');
+        res.status(500).send('Error al obtener las direcciones del usuario');
     }
 };
 
@@ -261,12 +259,10 @@ exports.addAddress = async (req, res) => {
             description
         });
 
-        req.flash('success_msg', 'Dirección agregada exitosamente.');
         res.redirect('/user/direcciones');
     } catch (error) {
         console.error('Error al agregar la dirección:', error);
-        req.flash('error_msg', 'Error al agregar la dirección.');
-        res.redirect('/user/direcciones');
+        res.status(500).send('Error al agregar la dirección');
     }
 };
 
@@ -281,17 +277,14 @@ exports.deleteAddress = async (req, res) => {
         });
 
         if (!address) {
-            req.flash('error_msg', 'Dirección no encontrada.');
-            return res.status(404).redirect('/user/direcciones');
+            return res.status(404).send('Dirección no encontrada');
         }
 
         await address.destroy();
-        req.flash('success_msg', 'Dirección eliminada exitosamente.');
         res.redirect('/user/direcciones');
     } catch (error) {
         console.error('Error al eliminar la dirección:', error);
-        req.flash('error_msg', 'Error al eliminar la dirección.');
-        res.status(500).redirect('/user/direcciones');
+        res.status(500).send('Error al eliminar la dirección');
     }
 };
 
@@ -306,19 +299,15 @@ exports.editAddressPage = async (req, res) => {
         });
 
         if (!address) {
-            req.flash('error_msg', 'Dirección no encontrada.');
-            return res.status(404).redirect('/user/direcciones');
+            return res.status(404).send('Dirección no encontrada');
         }
 
         res.render('clienteViews/editarDireccion', {
-            address,
-            success_msg: req.flash('success_msg'),
-            error_msg: req.flash('error_msg')
+            address
         });
     } catch (error) {
         console.error('Error al obtener la dirección para editar:', error);
-        req.flash('error_msg', 'Error al obtener la dirección.');
-        res.redirect('/user/direcciones');
+        res.status(500).send('Error al obtener la dirección para editar');
     }
 };
 
@@ -334,16 +323,13 @@ exports.updateAddress = async (req, res) => {
         });
 
         if (!address) {
-            req.flash('error_msg', 'Dirección no encontrada.');
-            return res.status(404).redirect('/user/direcciones');
+            return res.status(404).send('Dirección no encontrada');
         }
 
         await address.update({ name, description });
-        req.flash('success_msg', 'Dirección actualizada exitosamente.');
         res.redirect('/user/direcciones');
     } catch (error) {
         console.error('Error al actualizar la dirección:', error);
-        req.flash('error_msg', 'Error al actualizar la dirección.');
-        res.redirect('/user/direcciones');
+        res.status(500).send('Error al actualizar la dirección');
     }
 };

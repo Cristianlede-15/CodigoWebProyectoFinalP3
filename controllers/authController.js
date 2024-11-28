@@ -62,55 +62,69 @@ exports.activateAccount = async (req, res) => {
 };
 
 // authController.js
+
 exports.login = async (req, res) => {
-    const { identifier, password } = req.body;
+    const { identifier, password } = req.body; // 'identifier' puede ser email o username para usuarios regulares
     try {
-        // Buscar en la tabla de Usuarios
-        let user = await Users.findOne({ 
-            where: { 
-                [Op.or]: [{ email: identifier }, { username: identifier }] 
-            } 
+        // Intentar encontrar en la tabla Business solo por email
+        let business = await Business.findOne({ 
+            where: { email: identifier },
+            include: [{ model: Users, as: 'owner' }]
         });
 
-        // Si no se encuentra en Usuarios, buscar en Business
-        if (!user) {
-            user = await Business.findOne({ 
-                where: { email: identifier } 
-            });
+        if (business) {
+            if (!business.is_active) {
+                return res.status(401).json({ message: 'Cuenta no activada' });
+            }
+
+            const isPasswordValid = await bcrypt.compare(password, business.password);
+            if (!isPasswordValid) {
+                return res.status(401).json({ message: 'Contraseña incorrecta' });
+            }
+
+            // Establecer datos en la sesión
+            req.session.user = {
+                id: business.id, // Usar 'id' del negocio
+                nombre: business.business_name,
+                email: business.email,
+                role: 'business'
+            };
+            req.session.business_id = business.id; // Asegurarse de que se establece correctamente
+
+            console.log('Sesión de usuario establecida:', req.session);
+
+            return res.redirect('/business/home');
         }
+
+        // Si no es un business, intentar encontrar en la tabla Users por email o username
+        let user = await Users.findOne({
+            where: { 
+                [Op.or]: [{ email: identifier }, { username: identifier }] 
+            }
+        });
 
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
         if (!user.is_active) {
-            return res.status(403).json({ message: 'Cuenta no activada. Por favor, revisa tu correo.' });
+            return res.status(401).json({ message: 'Cuenta no activada' });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Contraseña inválida' });
+        const isPasswordValidUser = await bcrypt.compare(password, user.password);
+        if (!isPasswordValidUser) {
+            return res.status(401).json({ message: 'Contraseña incorrecta' });
         }
 
-        // Configurar los datos de la sesión según el tipo de usuario
-        if (user.role) { // Usuario de la tabla Users
-            req.session.user = {
-                id: user.id,
-                nombre: `${user.first_name} ${user.last_name}`,
-                email: user.email,
-                username: user.username,
-                role: user.role
-            };
-        } else { // Usuario de la tabla Business
-            req.session.user = {
-                businessId: user.id,
-                nombre: user.business_name,
-                email: user.email,
-                role: 'business'
-            };
-        }
+        // Establecer datos en la sesión
+        req.session.user = {
+            id: user.id,
+            nombre: user.nombre,
+            email: user.email,
+            role: user.role
+        };
 
-        console.log('Sesión de usuario establecida:', req.session.user); // Log para depuración
+        console.log('Sesión de usuario establecida:', req.session);
 
         // Redirigir según el rol del usuario
         let redirectUrl = '/';
@@ -138,6 +152,7 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: 'Error al iniciar sesión', error });
     }
 };
+
 
 // Solicitud de Restablecimiento de Contraseña
 exports.requestPasswordReset = async (req, res) => {

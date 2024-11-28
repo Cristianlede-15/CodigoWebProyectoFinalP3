@@ -94,22 +94,6 @@
             background-color: #218838;
             transform: scale(1.05);
         }
-
-        /* Estilos para los mensajes */
-        .alert {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .alert.success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .alert.error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
     </style>
 </head>
 <body>
@@ -126,20 +110,6 @@
     
     <div class="addresses-container">
         <h2>Mis Direcciones</h2>
-
-        <!-- Mensajes de éxito -->
-        <% if (success_msg) { %>
-            <div class="alert success">
-                <%= success_msg %>
-            </div>
-        <% } %>
-
-        <!-- Mensajes de error -->
-        <% if (error_msg) { %>
-            <div class="alert error">
-                <%= error_msg %>
-            </div>
-        <% } %>
 
         <% if (addresses.length === 0) { %>
             <p>No tienes ninguna dirección creada. <a href="/user/direcciones/agregar">Agregar una dirección</a></p>

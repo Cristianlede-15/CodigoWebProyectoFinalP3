@@ -18,6 +18,9 @@ router.post('/cart/remove', isAuthenticated, hasRole('client'), cartController.r
 // Ruta para seleccionar dirección
 router.get('/checkout', isAuthenticated, hasRole('client'), userController.selectAddress);
 
+router.post('/checkout', isAuthenticated, hasRole('client'), cartController.checkout);
+
+
 // Rutas para direcciones
 router.get('/user/direcciones', isAuthenticated, hasRole('client'), userController.getUserAddresses);
 router.get('/user/direcciones/agregar', isAuthenticated, hasRole('client'), (req, res) => {

@@ -8,24 +8,16 @@ const upload = require('../config/multerConfig');
 const Category = require('../models/Categories');
 
 // Ruta principal del negocio
-router.get('/home', isAuthenticated, hasRole('business'), async (req, res) => {
-    try {
-        const orders = await businessesController.getOrdersForBusiness(req.session.user.businessId);
-        res.render('comerciosViews/home', { user: req.session.user, orders });
-    } catch (error) {
-        console.error('Error fetching orders:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
+router.get('/home', isAuthenticated, hasRole('business'), businessesController.getOrdersForBusiness);
 
 // Ruta para obtener órdenes en formato JSON
 router.get('/orders', isAuthenticated, hasRole('business'), async (req, res) => {
-    const businessId = req.session.user.businessId; // Obtener el businessId desde la sesión
+    const businessId = req.session.business_id; // Usar 'business_id' de la sesión
     console.log('businessId:', businessId); // Log para depuración
 
     try {
-        const orders = await businessesController.getOrdersForBusiness(businessId);
-        res.status(200).json(orders);
+        const orders = await businessesController.getOrdersForBusiness(req, res);
+        // La función getOrdersForBusiness ya maneja la respuesta
     } catch (error) {
         console.error('Error fetching orders:', error);
         res.status(500).json({ message: 'Error fetching orders', error: error.message });
@@ -39,7 +31,6 @@ router.get('/perfil', isAuthenticated, hasRole('business'), (req, res) => {
 
 // Ruta para actualizar el perfil del negocio
 router.post('/perfil', isAuthenticated, hasRole('business'), businessesController.updateProfile);
-
 
 // Ruta para manejar productos
 router.get('/productos', isAuthenticated, hasRole('business'), businessesController.getProducts);
@@ -60,16 +51,7 @@ router.post('/productos/editar/:id', isAuthenticated, hasRole('business'), busin
 router.post('/productos/eliminar/:id', isAuthenticated, hasRole('business'), businessesController.deleteProduct);
 
 // Ruta para mantenimiento de categorías
-router.get('/categorias', isAuthenticated, hasRole('business'), async (req, res) => {
-    const businessId = req.session.user.businessId;
-    try {
-        const categories = await businessesController.getCategoriesForBusiness(businessId);
-        res.render('comerciosViews/categorias', { user: req.session.user, categories });
-    } catch (error) {
-        console.error('Error fetching categories:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
+router.get('/categorias', isAuthenticated, hasRole('business'), businessesController.getCategoriesForBusiness);
 
 // Ruta para renderizar el formulario de creación de categoría
 router.get('/categorias/crear', isAuthenticated, hasRole('business'), (req, res) => {
@@ -83,7 +65,7 @@ router.post('/categorias/crear', isAuthenticated, hasRole('business'), businesse
 router.get('/categorias/editar/:id', isAuthenticated, hasRole('business'), async (req, res) => {
     try {
         const { id } = req.params;
-        const businessId = req.session.user.businessId;
+        const businessId = req.session.business_id;
         const category = await Category.findOne({ where: { id, business_id: businessId } });
         
         if (!category) {
@@ -102,7 +84,7 @@ router.post('/categorias/editar/:id', isAuthenticated, hasRole('business'), asyn
     const { id } = req.params;
     const { name, description } = req.body;
     try {
-        const category = await Category.findOne({ where: { id, business_id: req.session.user.businessId } });
+        const category = await Category.findOne({ where: { id, business_id: req.session.business_id } });
         if (!category) {
             return res.status(404).send('Categoría no encontrada');
         }
@@ -120,7 +102,7 @@ router.post('/categorias/editar/:id', isAuthenticated, hasRole('business'), asyn
 router.post('/categorias/eliminar/:id', isAuthenticated, hasRole('business'), async (req, res) => {
     const { id } = req.params;
     try {
-        const category = await Category.findOne({ where: { id, business_id: req.session.user.businessId } });
+        const category = await Category.findOne({ where: { id, business_id: req.session.business_id } });
         if (!category) {
             return res.status(404).send('Categoría no encontrada');
         }

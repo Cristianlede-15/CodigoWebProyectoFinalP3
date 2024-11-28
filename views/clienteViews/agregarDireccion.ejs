@@ -75,22 +75,6 @@
         .back-link a:hover {
             text-decoration: underline;
         }
-
-        /* Estilos para los mensajes */
-        .alert {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .alert.success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .alert.error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
     </style>
 </head>
 <body>
@@ -107,20 +91,6 @@
     
     <div class="address-form-container">
         <h2>Agregar Nueva Dirección</h2>
-
-        <!-- Mensajes de éxito -->
-        <% if (success_msg) { %>
-            <div class="alert success">
-                <%= success_msg %>
-            </div>
-        <% } %>
-
-        <!-- Mensajes de error -->
-        <% if (error_msg) { %>
-            <div class="alert error">
-                <%= error_msg %>
-            </div>
-        <% } %>
 
         <form action="/user/direcciones/agregar" method="POST">
             <label for="name">Nombre de la Dirección</label>

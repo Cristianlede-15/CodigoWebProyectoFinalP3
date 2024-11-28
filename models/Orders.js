@@ -2,7 +2,6 @@
 
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/AppDbContext');
-const Business = require('./Business');
 
 const Orders = sequelize.define('Orders', {
     status: {
@@ -20,13 +19,28 @@ const Orders = sequelize.define('Orders', {
     total: {
         type: DataTypes.DECIMAL(10,2),
         allowNull: false
+    },
+    // Campos de claves foráneas
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    business_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    address_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    delivery_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true // Puede ser null si aún no se asigna repartidor
     }
 }, {
     tableName: 'orders',
     timestamps: true,
     freezeTableName: true
 });
-
-
 
 module.exports = Orders;
