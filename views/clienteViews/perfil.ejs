@@ -1,3 +1,4 @@
+<!-- FILE: perfil.ejs -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -63,14 +64,26 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        form button[type="submit"]:hover {
-            background-color: #28a745;
+        form button:hover {
             transform: scale(1.05);
         }
 
-        form button[type="button"]:hover {
+        .back-button {
             background-color: #ffcc00;
-            transform: scale(1.05);
+        }
+
+        .save-button {
+            background-color: #28a745;
+        }
+
+        /* Imagen de perfil */
+        .profile-image {
+            display: block;
+            margin: 0 auto 1rem;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
         }
     </style>
 </head>
@@ -85,16 +98,21 @@
             <li><a href="/user/logout">Cerrar sesión</a></li>
         </ul>
     </nav>
-        <div class="profile-container">
+    <div class="profile-container">
         <h2>Mi Perfil</h2>
-        <form>
-            <input type="text" placeholder="Nombre" required>
-            <input type="text" placeholder="Apellido" required>
-            <input type="email" placeholder="Email" required>
-            <input type="tel" placeholder="Teléfono" required>
-            <input type="text" placeholder="Dirección" required>
-            <button type="submit">Guardar cambios</button>
-            <button type="button">Cambiar contraseña</button>
+        <% if (user.profile_image) { %>
+            <img src="<%= user.profile_image %>" alt="Foto de perfil" class="profile-image">
+        <% } else { %>
+            <img src="/images/default-profile.png" alt="Foto de perfil" class="profile-image">
+        <% } %>
+        <form action="/user/perfil/edit" method="POST" enctype="multipart/form-data">
+            <input type="text" name="first_name" placeholder="Nombre" value="<%= user.first_name %>" required>
+            <input type="text" name="last_name" placeholder="Apellido" value="<%= user.last_name %>" required>
+            <input type="tel" name="phone" placeholder="Teléfono" value="<%= user.phone %>" required>
+            <label for="profile_image">Foto de usuario (opcional):</label>
+            <input type="file" name="profile_image" accept="image/*">
+            <button type="submit" class="save-button">Guardar cambios</button>
+            <button type="button" class="back-button" onclick="window.location.href='/user/home'">Volver al Home</button>
         </form>
     </div>
 </body>

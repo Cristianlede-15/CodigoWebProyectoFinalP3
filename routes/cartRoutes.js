@@ -20,6 +20,8 @@ router.get('/checkout', isAuthenticated, hasRole('client'), userController.selec
 
 router.post('/checkout', isAuthenticated, hasRole('client'), cartController.checkout);
 
+// Ruta para la confirmación del pedido
+router.get('/orders/confirmation', cartController.confirmation);
 
 // Rutas para direcciones
 router.get('/user/direcciones', isAuthenticated, hasRole('client'), userController.getUserAddresses);

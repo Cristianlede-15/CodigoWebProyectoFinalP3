@@ -7,6 +7,8 @@ const { Op } = require('sequelize');
 const Business = require('../models/Business');
 const BusinessTypes = require('../models/BusinessTypes');
 const path = require('path');
+const DeliveryStatus = require('../models/DeliveryStatus'); // Importa el modelo DeliveryStatus
+
 
 // Registro de usuario
 exports.register = async (req, res) => {
@@ -26,6 +28,14 @@ exports.register = async (req, res) => {
             activation_token: activationToken,
             is_active: false // Nuevo campo para indicar si la cuenta está activa
         });
+
+        // Crear registro en DeliveryStatus si el rol es 'delivery'
+        if (role === 'delivery') {
+            await DeliveryStatus.create({
+                user_id: user.id,
+                is_available: true // Por defecto, el delivery está disponible
+            });
+        }
 
         // Envío de correo de activación
         const activationLink = `http://${req.headers.host}/auth/activate/${activationToken}`;
@@ -67,7 +77,7 @@ exports.login = async (req, res) => {
     const { identifier, password } = req.body; // 'identifier' puede ser email o username para usuarios regulares
     try {
         // Intentar encontrar en la tabla Business solo por email
-        let business = await Business.findOne({ 
+        let business = await Business.findOne({
             where: { email: identifier },
             include: [{ model: Users, as: 'owner' }]
         });
@@ -98,8 +108,8 @@ exports.login = async (req, res) => {
 
         // Si no es un business, intentar encontrar en la tabla Users por email o username
         let user = await Users.findOne({
-            where: { 
-                [Op.or]: [{ email: identifier }, { username: identifier }] 
+            where: {
+                [Op.or]: [{ email: identifier }, { username: identifier }]
             }
         });
 

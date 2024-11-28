@@ -4,9 +4,15 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/AppDbContext');
 
 const Orders = sequelize.define('Orders', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     status: {
         type: DataTypes.ENUM('pending', 'in_process', 'completed'),
-        defaultValue: 'pending'
+        defaultValue: 'pending',
+        allowNull: false
     },
     subtotal: {
         type: DataTypes.DECIMAL(10,2),
@@ -20,7 +26,6 @@ const Orders = sequelize.define('Orders', {
         type: DataTypes.DECIMAL(10,2),
         allowNull: false
     },
-    // Campos de claves foráneas
     user_id: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -35,7 +40,17 @@ const Orders = sequelize.define('Orders', {
     },
     delivery_id: {
         type: DataTypes.INTEGER,
-        allowNull: true // Puede ser null si aún no se asigna repartidor
+        allowNull: true
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     }
 }, {
     tableName: 'orders',

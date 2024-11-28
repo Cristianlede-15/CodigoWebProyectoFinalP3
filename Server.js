@@ -27,7 +27,7 @@ const OrderDetails = require('./models/OrderDetails');
 const DeliveryStatus = require('./models/DeliveryStatus');
 
 // Configuración de la base de datos
-const dbPath = path.join(path.dirname(require.main.filename), 'DataBase', 'BaseDatos.sqlite');
+const dbPath = path.join(path.dirname(require.main.filename), 'DataBase', 'CenarDb.sqlite');
 if (!fs.existsSync(dbPath)) {
     sequelize.sync({ alter: true }).then(() => {
         console.log('Database & tables created!');
@@ -119,6 +119,16 @@ OrderDetails.belongsTo(Products, { foreignKey: 'product_id', as: 'product' });
 Users.hasMany(Orders, { foreignKey: 'delivery_id', as: 'deliveries' });
 Orders.belongsTo(Users, { foreignKey: 'delivery_id', as: 'deliverer' });
 
+// Orders y DeliveryStatus
+Orders.belongsTo(DeliveryStatus, { foreignKey: 'deliveryStatusId', as: 'deliveryStatus' });
+DeliveryStatus.hasMany(Orders, { foreignKey: 'deliveryStatusId', as: 'orders' });
+
+Users.hasOne(DeliveryStatus, { foreignKey: 'user_id', as: 'deliveryStatus' });
+DeliveryStatus.belongsTo(Users, { foreignKey: 'user_id', as: 'user' });
+
+
+
+
 
 // Middleware
 app.use(express.json());
@@ -165,6 +175,9 @@ app.use('/admin', adminRoutes);
 // Importar y usar las rutas de negocios
 const businessRoutes = require('./routes/businessRoutes');
 app.use('/business', businessRoutes);
+
+
+
 
 // Ruta raíz que redirige a la página de inicio de sesión
 app.get('/', (req, res) => {

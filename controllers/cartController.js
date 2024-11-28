@@ -6,6 +6,8 @@ const OrderDetails = require('../models/OrderDetails');
 const Address = require('../models/Adresses'); // Asegúrate de que la ruta es correcta
 const Business = require('../models/Business');
 const Configuracion = require('../models/Configuracion'); // Importa el modelo Configuracion
+const User = require('../models/Users');
+const DeliveryStatus = require('../models/DeliveryStatus');
 
 exports.addToCart = async (req, res) => {
     const { product_id } = req.body;
@@ -82,36 +84,59 @@ exports.removeFromCart = (req, res) => {
         res.status(500).send('Error removing from cart');
     }
 };
+
 exports.checkout = async (req, res) => {
     const user_id = req.session.user.id;
     const cart = req.session.cart;
     const address_id = req.body.address_id; // ID de la dirección seleccionada
 
+    console.log(`ID del usuario: ${user_id}`);
+    console.log(`Carrito: ${JSON.stringify(cart)}`);
+    console.log(`ID de la dirección: ${address_id}`);
+
+    if (!cart || cart.items.length === 0) {
+        return res.status(400).send('El carrito está vacío.');
+    }
+
     try {
-        if (!cart || cart.items.length === 0) {
-            return res.status(400).send('El carrito está vacío.');
-        }
-
-        // Obtener la configuración de ITBIS
-        const configuracion = await Configuracion.findOne();
-        const taxRate = configuracion ? configuracion.tax_rate : 0;
-
-        // Calcular subtotal, impuestos y total
-        const subtotal = cart.total;
-        const taxAmount = subtotal * (taxRate / 100);
-        const total = subtotal + taxAmount;
-
-        // Crear el pedido
-        const order = await Orders.create({
-            user_id: user_id,
-            address_id: address_id,
-            business_id: req.session.business_id,
-            subtotal: subtotal,
-            tax_rate: taxRate,
-            total: total
+        // 1. Asignar un delivery disponible
+        const delivery = await User.findOne({
+            where: { role: 'delivery' },
+            include: [{
+                model: DeliveryStatus,
+                as: 'deliveryStatus',
+                where: { is_available: true }
+            }]
         });
 
-        // Guardar los detalles del pedido
+        console.log('Delivery asignado:', delivery);
+
+        if (!delivery) {
+            return res.status(400).send('No hay deliverys disponibles en este momento.');
+        }
+
+        // Calcular subtotal y tax_rate
+        const subtotal = cart.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+        const tax_rate = 0.18; // Ejemplo de tasa de impuesto del 18%
+        const business_id = req.session.business_id;
+
+        console.log(`Subtotal: ${subtotal}, Tax Rate: ${tax_rate}, Business ID: ${business_id}`);
+
+        // 2. Crear el pedido
+        const order = await Orders.create({
+            user_id,
+            address_id,
+            delivery_id: delivery.id, // Asignar el delivery al pedido
+            status: 'Pendiente',
+            total: cart.total,
+            subtotal,
+            tax_rate,
+            business_id
+        });
+
+        console.log('Pedido creado:', order);
+
+        // 3. Agregar los detalles del pedido
         for (const item of cart.items) {
             await OrderDetails.create({
                 order_id: order.id,
@@ -121,14 +146,26 @@ exports.checkout = async (req, res) => {
             });
         }
 
-        // Vaciar el carrito y eliminar business_id de la sesión
-        req.session.cart = { items: [], total: 0 };
-        delete req.session.business_id;
+        // 4. Actualizar la disponibilidad del delivery
+        await DeliveryStatus.update(
+            { is_available: false },
+            { where: { user_id: delivery.id } }
+        );
 
-        // Redirigir al home del cliente
-        res.redirect('/user/home');
-    } catch (error) {
-        console.error('Error al procesar el checkout:', error);
-        res.status(500).send('Error al procesar el checkout');
+        console.log('Disponibilidad del delivery actualizada.');
+
+        // 5. Limpiar el carrito de la sesión
+        req.session.cart = { items: [], total: 0 };
+
+        res.redirect(`${req.baseUrl}/orders/confirmation`);
+            } catch (error) {
+        console.error('Error en el checkout:', error);
+        res.status(500).send('Error interno del servidor');
     }
+};
+
+// controllers/cartController.js
+
+exports.confirmation = (req, res) => {
+    res.render('clienteViews/confirmation');
 };

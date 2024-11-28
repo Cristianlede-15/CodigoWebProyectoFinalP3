@@ -88,15 +88,26 @@ exports.getBusinessTypes = async (req, res) => {
 // Función para obtener los comercios por tipo
 exports.getBusinessesByType = async (req, res) => {
     const { typeId } = req.params;
-    const user_id = req.session.user.id;
+    const user_id = req.session.user ? req.session.user.id : null;
 
     try {
+        // Verificar si el user_id está disponible
+        if (!user_id) {
+            return res.status(401).send('Usuario no autenticado.');
+        }
+
+        // Recuperar los comercios filtrados por tipo y activos
         const businesses = await Business.findAll({
-            where: { business_type_id: typeId },
+            where: { 
+                business_type_id: typeId,
+                is_active: true
+            },
             attributes: ['id', 'business_name', 'logo']
         });
 
-        // Obtener los IDs de los negocios favoritos
+        console.log('Comercios recuperados:', businesses);
+
+        // Obtener los IDs de los negocios favoritos del usuario
         const favoriteBusinesses = await Favorites.findAll({
             where: { user_id },
             attributes: ['business_id']
@@ -331,5 +342,59 @@ exports.updateAddress = async (req, res) => {
     } catch (error) {
         console.error('Error al actualizar la dirección:', error);
         res.status(500).send('Error al actualizar la dirección');
+    }
+};
+
+// Mostrar el formulario de edición de perfil
+exports.showProfile = async (req, res) => {
+    const userId = req.session.user.id;
+    try {
+        const user = await User.findByPk(userId);
+        res.render('clienteViews/perfil', { user });
+    } catch (error) {
+        console.error('Error al obtener el perfil del usuario:', error);
+        res.status(500).send('Error al obtener el perfil del usuario');
+    }
+};
+
+// Actualizar la información del perfil del usuario
+exports.updateProfile = async (req, res) => {
+    const userId = req.session.user.id;
+    const { first_name, last_name, phone } = req.body;
+    let profile_image = req.body.profile_image;
+
+    try {
+        const user = await User.findByPk(userId);
+
+        if (!user) {
+            return res.status(404).send('Usuario no encontrado');
+        }
+
+        // Si se subió una nueva imagen de perfil
+        if (req.file) {
+            // Eliminar la imagen anterior si existe
+            if (user.profile_image) {
+                const oldImagePath = path.join(__dirname, '../public', user.profile_image);
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
+            }
+
+            // Guardar la nueva imagen
+            profile_image = `/uploads/${req.file.filename}`;
+        }
+
+        // Actualizar los datos del usuario
+        await user.update({
+            first_name,
+            last_name,
+            phone,
+            profile_image
+        });
+
+        res.redirect('/user/perfil');
+    } catch (error) {
+        console.error('Error al actualizar el perfil del usuario:', error);
+        res.status(500).send('Error al actualizar el perfil del usuario');
     }
 };
