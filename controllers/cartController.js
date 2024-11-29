@@ -127,7 +127,7 @@ exports.checkout = async (req, res) => {
             user_id,
             address_id,
             delivery_id: delivery.id, // Asignar el delivery al pedido
-            status: 'Pendiente',
+            status: 'in_process', // Cambiar el estado a 'in_process'
             total: cart.total,
             subtotal,
             tax_rate,
@@ -158,7 +158,7 @@ exports.checkout = async (req, res) => {
         req.session.cart = { items: [], total: 0 };
 
         res.redirect(`${req.baseUrl}/orders/confirmation`);
-            } catch (error) {
+    } catch (error) {
         console.error('Error en el checkout:', error);
         res.status(500).send('Error interno del servidor');
     }

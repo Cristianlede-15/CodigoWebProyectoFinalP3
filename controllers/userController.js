@@ -9,6 +9,9 @@ const Products = require('../models/Product');
 const Configuracion = require('../models/Configuracion');
 const Address = require('../models/Adresses'); // Ajusta la ruta según sea necesario
 const Product = require('../models/Product');
+const Orders = require('../models/Orders');
+
+
 
 // Controlador para obtener entregas (usuarios con rol 'delivery')
 exports.getDeliveries = async (req, res) => {
@@ -498,7 +501,7 @@ exports.getOrderDetails = async (req, res) => {
     const userId = req.session.user.id;
     const orderId = req.params.id;
     try {
-        const order = await Order.findOne({
+        const order = await Orders.findOne({
             where: { id: orderId, delivery_id: userId },
             include: [
                 {
@@ -514,7 +517,7 @@ exports.getOrderDetails = async (req, res) => {
                 {
                     model: Address,
                     as: 'address',
-                    attributes: ['name', 'description']
+                    attributes: ['description']
                 }
             ]
         });
@@ -532,7 +535,7 @@ exports.completeOrder = async (req, res) => {
     const userId = req.session.user.id;
     const orderId = req.params.id;
     try {
-        const order = await Order.findOne({ where: { id: orderId, delivery_id: userId } });
+        const order = await Orders.findOne({ where: { id: orderId, delivery_id: userId } });
         if (!order) {
             return res.status(404).send('Order not found');
         }

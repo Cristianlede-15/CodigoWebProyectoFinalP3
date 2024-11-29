@@ -116,7 +116,7 @@
                 </div>
             <% }); %>
         </div>
-        <% if (order.status === 'in process') { %>
+        <% if (order.status === 'in_process') { %>
             <form action="/delivery/order/<%= order.id %>/complete" method="POST">
                 <button type="submit" class="complete-button">Completar Pedido</button>
             </form>
