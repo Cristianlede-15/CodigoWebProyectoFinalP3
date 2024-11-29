@@ -25,6 +25,19 @@
             position: relative;
         }
 
+        .navbar-menu {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background-color: #2c3e50;
+        }
+
+        .navbar-menu li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
         .profile-container {
             background-color: #fff;
             padding: 2rem;
@@ -33,7 +46,7 @@
             width: 100%;
             max-width: 500px;
             text-align: center;
-            margin: 5rem auto; /* Añadí margen superior para que no se sobreponga con el navbar */
+            margin: 5rem auto; /* Margen superior para no sobreponerse con el navbar */
         }
 
         .profile-container h2 {
@@ -68,6 +81,14 @@
         .profile-container button:hover {
             background-color: #149174;
         }
+
+        .profile-container .back-button {
+            background-color: #3498db;
+        }
+
+        .profile-container .back-button:hover {
+            background-color: #2980b9;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 </head>
@@ -83,12 +104,16 @@
     </nav>
     <div class="profile-container">
         <h2>Perfil del Comercio</h2>
-        <form action="/business/perfil" method="POST">
+        <form action="/business/perfil" method="POST" enctype="multipart/form-data">
             <input type="text" name="business_name" placeholder="Nombre del comercio" value="<%= user.business_name %>" required>
             <input type="text" name="address" placeholder="Dirección" value="<%= user.address %>" required>
             <input type="tel" name="phone" placeholder="Teléfono" value="<%= user.phone %>" required>
             <input type="email" name="email" placeholder="Email" value="<%= user.email %>" required>
+            <input type="file" name="logo" accept="image/*">
+            <input type="time" name="opening_time" placeholder="Hora de apertura" value="<%= user.opening_time %>" required>
+            <input type="time" name="closing_time" placeholder="Hora de cierre" value="<%= user.closing_time %>" required>
             <button type="submit">Guardar cambios</button>
+            <button type="button" class="back-button" onclick="window.location.href='/business/home'">Volver al Home</button>
         </form>
     </div>
 </body>

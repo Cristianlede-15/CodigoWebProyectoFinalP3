@@ -37,7 +37,7 @@ router.get('/perfil', isAuthenticated, hasRole('business'), (req, res) => {
 });
 
 // Ruta para actualizar el perfil del negocio
-router.post('/perfil', isAuthenticated, hasRole('business'), businessesController.updateProfile);
+router.post('/perfil', upload.single('logo'), businessesController.updateProfile);
 
 // Ruta para manejar productos
 router.get('/productos', isAuthenticated, hasRole('business'), businessesController.getProducts);

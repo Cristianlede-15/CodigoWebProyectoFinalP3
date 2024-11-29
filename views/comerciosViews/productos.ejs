@@ -62,8 +62,20 @@
         }
         .product-info {
             flex-grow: 1;
+            display: flex;
+            align-items: center;
         }
-        .product-info p {
+        .product-info img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+        .product-details {
+            flex-grow: 1;
+        }
+        .product-details p {
             margin: 5px 0;
         }
         .product-actions button {
@@ -94,6 +106,23 @@
         .add-button:hover {
             background-color: #45a049;
         }
+        @media (max-width: 768px) {
+            .product {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .product-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .product-info img {
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
+            .product-actions {
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -114,9 +143,17 @@
             <% products.forEach(product => { %>
                 <div class="product">
                     <div class="product-info">
-                        <p><strong>Nombre:</strong> <%= product.name %></p>
-                        <p><strong>Precio:</strong> $<%= product.price.toFixed(2) %></p>
-                        <p><strong>Categoría:</strong> <%= product.category.name %></p>
+                        <% if (product.image) { %>
+                            <img src="/ImagesRepo/<%= product.image %>" alt="<%= product.name %>">
+                        <% } else { %>
+                            <img src="/ImagesRepo/default-product.png" alt="Producto sin imagen">
+                        <% } %>
+                        <div class="product-details">
+                            <p><strong>Nombre:</strong> <%= product.name %></p>
+                            <p><strong>Descripción:</strong> <%= product.description %></p>
+                            <p><strong>Categoría:</strong> <%= product.category.name %></p>
+                            <p><strong>Precio:</strong> $<%= product.price.toFixed(2) %></p>
+                        </div>
                     </div>
                     <div class="product-actions">
                         <a href="/business/productos/editar/<%= product.id %>"><button>Editar</button></a>

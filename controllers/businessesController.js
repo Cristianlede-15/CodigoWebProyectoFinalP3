@@ -389,8 +389,18 @@ exports.deleteProduct = async (req, res) => {
 
 
 exports.updateProfile = async (req, res) => {
-    const businessId = req.session.business_id; // Actualizado para usar business_id directamente
-    const { business_name, address, phone, email } = req.body;
+    const businessId = req.session.business_id;
+    const { business_name, address, phone, email, opening_time, closing_time } = req.body;
+    const logo = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Log para depuración
+    console.log('Datos recibidos:', req.body);
+    console.log('Archivo recibido:', req.file);
+
+    // Validar que los campos requeridos no sean null o undefined
+    if (!business_name || !address || !phone || !email || !opening_time || !closing_time) {
+        return res.status(400).send('Todos los campos son requeridos, excepto el logo.');
+    }
 
     try {
         const business = await Business.findByPk(businessId);
@@ -402,6 +412,11 @@ exports.updateProfile = async (req, res) => {
         business.address = address;
         business.phone = phone;
         business.email = email;
+        business.opening_time = opening_time;
+        business.closing_time = closing_time;
+        if (logo) {
+            business.logo = logo;
+        }
 
         await business.save();
         res.redirect('/business/perfil');
