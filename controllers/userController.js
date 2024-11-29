@@ -10,6 +10,10 @@ const Configuracion = require('../models/Configuracion');
 const Address = require('../models/Adresses'); // Ajusta la ruta según sea necesario
 const Product = require('../models/Product');
 const Orders = require('../models/Orders');
+const path = require('path');
+const fs = require('fs');
+const OrderDetails = require('../models/OrderDetails');
+const DeliveryStatus = require('../models/DeliveryStatus');
 
 
 
@@ -385,7 +389,7 @@ exports.updateProfile = async (req, res) => {
             }
 
             // Guardar la nueva imagen
-            profile_image = `/ImagesRepo/${req.file.filename}`;
+            profile_image = `${req.file.filename}`;
         } else {
             profile_image = user.profile_image;
         }
@@ -438,35 +442,54 @@ exports.getUserOrders = async (req, res) => {
 };
 
 // Obtener detalles de un pedido específico
+// controllers/userController.js
+// Obtener detalles de un pedido específico
 exports.getOrderDetails = async (req, res) => {
     const userId = req.session.user.id;
-    const orderId = req.params.id;
+    const orderId = parseInt(req.params.id, 10); // Asegurar que orderId es un número
+
+    console.log(`Buscando Pedido ID: ${orderId} para Usuario ID: ${userId}`);
+
     try {
         const order = await Order.findOne({
-            where: { id: orderId, user_id: userId },
+            where: {
+                id: orderId,
+                user_id: userId
+            },
             include: [
                 {
                     model: Business,
-                    as: 'business', // Asegúrate de que el alias es 'business' en minúsculas
-                    attributes: ['business_name', 'logo'] // Incluye 'logo' aquí también
+                    as: 'business',
+                    attributes: ['id', 'business_name', 'logo']
                 },
                 {
-                    model: Product,
-                    as: 'products',
-                    through: { attributes: [] },
-                    attributes: ['name', 'price', 'image']
+                    model: OrderDetails,
+                    as: 'orderDetails',
+                    include: [{
+                        model: Product,
+                        as: 'product',
+                        attributes: ['id', 'name', 'price', 'image']
+                    }],
+                    attributes: ['id', 'quantity', 'price']
+                },
+                {
+                    model: Address,
+                    as: 'address',
+                    attributes: ['id', 'description']
                 }
             ]
         });
 
         if (!order) {
-            return res.status(404).send('Pedido no encontrado');
+            console.log(`Pedido con ID ${orderId} no encontrado para el usuario ${userId}.`);
+            return res.status(404).send('Order not found');
         }
 
-        res.render('clienteViews/detallePedido', { user: req.session.user, order });
+        console.log('Pedido encontrado:', order);
+        res.render('clienteViews/detallePedido', { order, user: req.session.user, total: order.total });
     } catch (error) {
-        console.error('Error al obtener los detalles del pedido:', error);
-        res.status(500).send('Error al obtener los detalles del pedido');
+        console.error('Error al obtener el detalle del pedido:', error);
+        res.status(500).send('Error interno del servidor');
     }
 };
 

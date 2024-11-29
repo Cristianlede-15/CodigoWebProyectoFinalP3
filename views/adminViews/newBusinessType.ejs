@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/css/navbar.css">
 </head>
 <body>
-    <!-- views/adminViews/newBusinessType.ejs -->
-
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/admin/dashboard">Home</a></li>
+            <li><a href="/admin/clientes">Clientes</a></li>
+            <li><a href="/admin/delivery">Deliveries</a></li>
+            <li><a href="/admin/comercios">Comercios</a></li>
+            <li><a href="/admin/configuracion">Configuración</a></li>
+            <li><a href="/admin/administradores">Administradores</a></li>
+            <li><a href="/admin/tipos_comercios">Tipos de Comercios</a></li>
+            <li><a href="/auth/logout">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
 <h1>Agregar Nuevo Tipo de Comercio</h1>
 <form action="/admin/tipos_comercios/nuevo" method="POST">
     <label for="name">Nombre:</label>

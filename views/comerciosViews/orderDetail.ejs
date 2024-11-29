@@ -1,3 +1,4 @@
+<!-- views/orderDetail.ejs -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -30,32 +31,31 @@
             margin-bottom: 1.5rem;
         }
 
-        .order-info {
+        /* Detalles del pedido */
+        .order-detail {
             margin-bottom: 1.5rem;
         }
 
-        .order-info p {
+        .order-detail p {
             margin: 5px 0;
         }
 
+        /* Productos del pedido */
         .products {
-            margin-bottom: 1.5rem;
+            margin-top: 1rem;
         }
 
         .product {
             display: flex;
             align-items: center;
-            padding: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            background: #fff;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ddd;
         }
 
         .product img {
             width: 50px;
             height: 50px;
-            border-radius: 8px;
+            border-radius: 4px;
             margin-right: 1rem;
             object-fit: cover;
         }
@@ -64,24 +64,22 @@
             flex-grow: 1;
         }
 
-        .product-info p {
-            margin: 5px 0;
-        }
-
-        .complete-button {
+        /* Botón para asignar delivery */
+        .assign-delivery {
             display: block;
             width: 100%;
-            padding: 1rem;
+            padding: 0.75rem;
             background-color: #4CAF50;
             color: white;
-            text-align: center;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none;
             cursor: pointer;
-            font-size: 1rem;
+            margin-top: 1rem;
         }
 
-        .complete-button:hover {
+        .assign-delivery:hover {
             background-color: #45a049;
         }
     </style>
@@ -89,36 +87,39 @@
 <body>
     <nav class="navbar">
         <ul class="navbar-menu">
-            <li><a href="/delivery/home">Home</a></li>
-            <li><a href="/delivery/perfil">Mi perfil</a></li>
+            <li><a href="/business/home">Home</a></li>
+            <li><a href="/business/perfil">Perfil</a></li>
+            <li><a href="/business/categorias">Mantenimiento de categorías</a></li>
+            <li><a href="/business/productos">Mantenimiento de productos</a></li>
             <li><a href="/auth/logout">Cerrar Sesión</a></li>
         </ul>
     </nav>
     
     <div class="container">
         <h2>Detalle del Pedido</h2>
-        <div class="order-info">
-            <p>Comercio: <%= order.business.business_name %></p>
+        <div class="order-detail">
+            <p>Nombre del Comercio: <%= order.businessName %></p>
             <p>Estado: <%= order.status %></p>
-            <p>Fecha: <%= order.createdAt.toLocaleDateString() %> Hora: <%= order.createdAt.toLocaleTimeString() %></p>
+            <p>Fecha y Hora: <%= order.createdAt.toLocaleString() %></p>
             <p>Total: $<%= order.total %></p>
-            <p>Dirección de entrega: <%= order.address.description %></p>
         </div>
+
         <div class="products">
             <h3>Productos</h3>
             <% order.products.forEach(product => { %>
-                <div class="product">
-                    <img src="<%= product.image %>" alt="Imagen del Producto">
-                    <div class="product-info">
-                        <p>Nombre: <%= product.name %></p>
-                        <p>Precio: $<%= product.price %></p>
-                    </div>
+            <div class="product">
+                <img src="/ImagesRepo/<%= product.image %>" alt="<%= product.name %>">
+                <div class="product-info">
+                    <p>Nombre: <%= product.name %></p>
+                    <p>Precio: $<%= product.price %></p>
                 </div>
-            <% }); %>
+            </div>
+            <% }) %>
         </div>
-        <% if (order.status === 'in_process') { %>
-            <form action="/delivery/order/<%= order.id %>/complete" method="POST">
-                <button type="submit" class="complete-button">Completar Pedido</button>
+
+        <% if(order.status === 'pendiente') { %>
+            <form action="/business/orders/<%= order.id %>/assign-delivery" method="POST">
+                <button type="submit" class="assign-delivery">Asignar Delivery</button>
             </form>
         <% } %>
     </div>

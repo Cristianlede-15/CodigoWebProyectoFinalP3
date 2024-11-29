@@ -12,8 +12,22 @@ const DeliveryStatus = require('../models/DeliveryStatus'); // Importa el modelo
 
 // Registro de usuario
 exports.register = async (req, res) => {
-    const { email, username, password, role, first_name, last_name, phone, profile_image } = req.body;
+    const { email, username, password, role, first_name, last_name, phone, confirm_password } = req.body;
+    // Obtener el nombre del archivo de la imagen de perfil si se subió
+    const profile_image = req.file ? req.file.filename : 'default.png';
+    
     try {
+        // Validar contraseñas
+        if (password !== confirm_password) {
+            return res.status(400).json({ message: 'Las contraseñas no coinciden.' });
+        }
+
+        // Verificar si el correo ya está registrado
+        const existingUser = await Users.findOne({ where: { email } });
+        if (existingUser) {
+            return res.status(400).json({ message: 'El correo ya está registrado.' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const activationToken = generateToken();
         const user = await Users.create({
@@ -24,17 +38,14 @@ exports.register = async (req, res) => {
             first_name,
             last_name,
             phone,
-            profile_image,
+            profile_image, // Guardar el nombre del archivo
             activation_token: activationToken,
-            is_active: false // Nuevo campo para indicar si la cuenta está activa
+            is_active: false
         });
 
         // Crear registro en DeliveryStatus si el rol es 'delivery'
         if (role === 'delivery') {
-            await DeliveryStatus.create({
-                user_id: user.id,
-                is_available: true // Por defecto, el delivery está disponible
-            });
+            await DeliveryStatus.create({ userId: user.id, status: 'available' });
         }
 
         // Envío de correo de activación
@@ -44,10 +55,10 @@ exports.register = async (req, res) => {
 
         sendEmail(email, subject, text);
 
-        res.status(200).json({ message: 'Registration successful. Please check your email to activate your account.' });
+        res.status(200).json({ message: 'Registro exitoso. Por favor, revisa tu correo para activar tu cuenta.' });
     } catch (error) {
-        console.error('Error registering user:', error);
-        res.status(500).json({ message: 'Error registering user', error });
+        console.error('Error registrando usuario:', error);
+        res.status(500).json({ message: 'Error registrando usuario', error });
     }
 };
 
@@ -84,7 +95,7 @@ exports.login = async (req, res) => {
 
         if (business) {
             if (!business.is_active) {
-                return res.status(401).json({ message: 'Cuenta no activada' });
+                return res.status(401).json({ message: 'Cuenta no activada, revise su correo o pongase en contacto con un administrador.' });
             }
 
             const isPasswordValid = await bcrypt.compare(password, business.password);
@@ -118,7 +129,7 @@ exports.login = async (req, res) => {
         }
 
         if (!user.is_active) {
-            return res.status(401).json({ message: 'Cuenta no activada' });
+            return res.status(401).json({ message: 'Cuenta no activada, revise su correo o pongase en contacto con un administrador.' });
         }
 
         const isPasswordValidUser = await bcrypt.compare(password, user.password);
@@ -161,6 +172,34 @@ exports.login = async (req, res) => {
         console.error('Error al iniciar sesión:', error);
         res.status(500).json({ message: 'Error al iniciar sesión', error });
     }
+};
+
+// authController.js
+
+exports.showLoginPage = (req, res) => {
+    if (req.session.user) {
+        // Redirigir según el rol del usuario
+        let redirectUrl = '/';
+        switch (req.session.user.role) {
+            case 'client':
+                redirectUrl = '/user/home';
+                break;
+            case 'delivery':
+                redirectUrl = '/delivery/home';
+                break;
+            case 'business':
+                redirectUrl = '/business/home';
+                break;
+            case 'admin':
+                redirectUrl = '/admin/dashboard';
+                break;
+            default:
+                redirectUrl = '/';
+                break;
+        }
+        return res.redirect(redirectUrl);
+    }
+    res.render('loginViews/login', { layout: false });
 };
 
 
@@ -219,16 +258,16 @@ exports.resetPassword = async (req, res) => {
 };
 
 // Cerrar sesión
+
 exports.logout = (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             console.error('Error al cerrar sesión:', err);
             return res.status(500).send('Error al cerrar sesión.');
         }
-        res.redirect('/login');
+        res.redirect('/auth/login');
     });
 };
-
 // Crear admin
 exports.createAdmin = async (req, res) => {
     try {

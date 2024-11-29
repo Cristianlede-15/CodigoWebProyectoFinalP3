@@ -76,24 +76,27 @@
             <li><a href="/business/perfil">Perfil</a></li>
             <li><a href="/business/categorias">Mantenimiento de categorías</a></li>
             <li><a href="/business/productos">Mantenimiento de productos</a></li>
-            <li><a href="/business/logout">Logout</a></li>
+            <li><a href="/auth/logout">Cerrar Sesión</a></li>
         </ul>
     </nav>
     
-    <div class="container">
-        <h2>Pedidos Recientes</h2>
-        <% orders.forEach(order => { %>
-        <div class="order">
-            <img src="<%= order.businessLogo %>" alt="Logo Comercio">
-            <div class="order-info">
-                <p class="status">Estado: <%= order.status %></p>
-                <p>Nombre del Comercio: <%= order.businessName %></p>
-                <p>Total: $<%= order.total %></p>
-                <p>Cantidad de Productos: <%= order.productCount %></p>
-                <p>Fecha: <%= order.createdAt.toLocaleString() %></p>
-            </div>
+<!-- home.ejs -->
+<div class="container">
+    <h2>Pedidos Recientes</h2>
+    <% orders.forEach(order => { %>
+<a href="/business/orders/<%= order.id %>" class="order-link">
+    <div class="order">
+        <img src="/ImagesRepo/<%= order.businessLogo %>" alt="Logo Comercio">
+        <div class="order-info">
+            <p class="status">Estado: <%= order.status %></p>
+            <p>Nombre del Comercio: <%= order.businessName %></p>
+            <p>Total: $<%= order.total %></p>
+            <p>Cantidad de Productos: <%= order.productCount %></p>
+            <p>Fecha: <%= order.createdAt.toLocaleString() %></p>
         </div>
-        <% }) %>
     </div>
+</a>
+    <% }) %>
+</div>
 </body>
 </html>

@@ -1,4 +1,3 @@
-// FILE: authRoutes.js-1
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
@@ -6,12 +5,14 @@ const upload = require('../middleware/multerConfig'); // Asegúrate de que la ru
 const multer = require('multer'); // Añade esta línea
 
 // Ruta para mostrar el formulario de inicio de sesión
-router.get('/login', (req, res) => {
-    res.render('loginViews/login', { layout: false });
-});
+router.get('/login', authController.showLoginPage);
 
 // Ruta para manejar el envío del formulario de inicio de sesión
 router.post('/login', authController.login);
+
+// Ruta para cerrar sesión
+router.post('/logout', authController.logout);
+router.get('/logout', authController.logout);
 
 // Ruta para mostrar el formulario de registro
 router.get('/register', (req, res) => {
@@ -19,14 +20,11 @@ router.get('/register', (req, res) => {
 });
 
 // Ruta para manejar el envío del formulario de registro
-router.post('/register', authController.register);
+router.post('/register', upload.single('profile_image'), authController.register);
 
 router.post('/registerBusiness', upload.single('logo'), authController.registerBusiness);
 
 router.get('/registerBusiness', authController.getRegisterBusiness);
-
-// Ruta para cerrar sesión
-router.post('/logout', authController.logout);
 
 // Ruta para mostrar el formulario de recuperación de contraseña
 router.get('/requestPasswordReset', (req, res) => {
@@ -51,6 +49,5 @@ router.get('/activateBusiness/:token', authController.activateBusinessAccount);
 router.get('/activate-business/:token', authController.activateBusinessAccount);
 
 router.get('/activate/:token', authController.activateAccount);
-
 
 module.exports = router;

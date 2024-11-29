@@ -5,7 +5,7 @@ const Order = require('../models/Orders');
 const Category = require('../models/Categories');
 const Product = require('../models/Product');
 const OrderDetails = require('../models/OrderDetails');
-
+const Address = require('../models/Adresses');
 
 exports.getBusinesses = async () => {
     try {
@@ -307,24 +307,44 @@ exports.renderEditProductForm = async (req, res) => {
 
 // controllers/businessesController.js
 exports.createProduct = async (req, res) => {
-    const { name, price, category_id } = req.body;
-    const businessId = req.session.business_id; // Actualizado para usar business_id directamente
+    const { name, description, price, category_id } = req.body;
+    const businessId = req.session.business_id;
 
     if (!businessId) {
         return res.status(400).send('ID de negocio no encontrado en la sesión.');
     }
 
     try {
+        const image = req.file ? req.file.filename : null;
+
         await Product.create({
             name,
+            description,
             price,
             category_id,
-            business_id: businessId
+            business_id: businessId,
+            image
         });
 
         res.redirect('/business/productos');
     } catch (error) {
         console.error('Error al crear producto:', error);
+        res.status(500).send('Error Interno del Servidor');
+    }
+};
+
+// Asegúrate de que el método para renderizar el formulario de creación incluye las categorías
+exports.renderCreateProductForm = async (req, res) => {
+    const businessId = req.session.business_id;
+
+    try {
+        const categories = await Category.findAll({
+            where: { business_id: businessId }
+        });
+
+        res.render('comerciosViews/crearProducto', { user: req.session.user, categories });
+    } catch (error) {
+        console.error('Error al obtener categorías:', error);
         res.status(500).send('Error Interno del Servidor');
     }
 };
@@ -388,5 +408,72 @@ exports.updateProfile = async (req, res) => {
     } catch (error) {
         console.error('Error al actualizar el perfil:', error);
         res.status(500).send('Error Interno del Servidor');
+    }
+};
+
+// controllers/businessesController.js
+
+// controllers/businessesController.js
+
+exports.getOrderDetail = async (req, res) => {
+    try {
+        const order = await Order.findByPk(req.params.id, {
+            include: [
+                {
+                    model: Product,
+                    as: 'products'
+                },
+                {
+                    model: Business,
+                    as: 'business',
+                    attributes: ['business_name', 'logo']
+                },
+                {
+                    model: OrderDetails,
+                    as: 'orderDetails',
+                    include: [{
+                        model: Product,
+                        as: 'product',
+                        attributes: ['id', 'name', 'price', 'image']
+                    }],
+                    attributes: ['id', 'quantity', 'price']
+                },
+                {
+                    model: Address,
+                    as: 'address',
+                    attributes: ['id', 'description']
+                }
+            ]
+        });
+        if (!order) {
+            return res.status(404).send('Pedido no encontrado');
+        }
+
+        // Determinar la vista a renderizar en función de la ruta
+        const view = req.path.includes('/business/') ? 'orderDetail' : 'clienteViews/detallePedido';
+        res.render(view, { order });
+    } catch (error) {
+        console.error('Error obteniendo el detalle del pedido:', error);
+        res.status(500).send('Error al obtener el detalle del pedido');
+    }
+};
+
+exports.assignDelivery = async (req, res) => {
+    try {
+        const order = await Order.findByPk(req.params.id);
+        if (!order) {
+            return res.status(404).send('Pedido no encontrado');
+        }
+        if (order.status !== 'pendiente') {
+            return res.status(400).send('El pedido no está en estado pendiente');
+        }
+        // Aquí puedes agregar lógica para asignar un delivery específico
+        order.status = 'en proceso';
+        order.deliveryAssigned = true; // Asumiendo que tienes este campo
+        await order.save();
+        res.redirect(`/business/orders/${req.params.id}`);
+    } catch (error) {
+        console.error('Error asignando delivery:', error);
+        res.status(500).send('Error al asignar delivery');
     }
 };

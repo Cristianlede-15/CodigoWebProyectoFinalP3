@@ -10,7 +10,8 @@
     <div class="register-container">
         <img src="/img/online-registration.png" alt="Ícono de registro" class="register-icon">
         <h2>Registrarse</h2>
-        <form method="POST" action="/auth/register">
+        <!-- Asegúrate de que enctype está presente para manejar archivos -->
+        <form method="POST" action="/auth/register" enctype="multipart/form-data">
             <div class="form-row">
                 <input type="text" name="first_name" placeholder="Nombre" required>
                 <input type="text" name="last_name" placeholder="Apellido" required>
@@ -23,14 +24,15 @@
                 <input type="password" name="password" placeholder="Contraseña" required>
                 <input type="password" name="confirm_password" placeholder="Confirmar contraseña" required>
             </div>
-            <input type="text" name="phone" placeholder="Teléfono">
+            <div class="form-row">
+                <input type="text" name="phone" placeholder="Teléfono">
+                <!-- Campo para subir la foto de perfil -->
+                <input type="file" name="profile_image" accept="image/*">
+            </div>
             <select name="role" required>
                 <option value="" disabled selected>Selecciona un rol</option>
                 <option value="client">Cliente</option>
                 <option value="delivery">Delivery</option>
-                <option value="business">Comercio</option>
-                <option value="admin">Comercio</option>
-
             </select>
             <button type="submit">Registrarse</button>
         </form>

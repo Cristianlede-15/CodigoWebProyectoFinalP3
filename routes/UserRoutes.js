@@ -5,6 +5,7 @@ const { isAuthenticated, hasRole } = require('../middleware/authMiddleware');
 const userController = require('../controllers/userController');
 const favoriteController = require('../controllers/favoriteController'); // Importar el controlador de favoritos
 const upload = require('../config/multerConfig'); // Asegúrate de la ruta correcta
+const businessesController = require('../controllers/businessesController');
 
 // Ruta para la página de inicio del cliente
 router.get('/home', isAuthenticated, hasRole('client'), userController.getBusinessTypes);
@@ -19,7 +20,8 @@ router.post('/perfil/edit', isAuthenticated, hasRole('client'), upload.single('p
 router.get('/pedidos', isAuthenticated, hasRole('client'), userController.getUserOrders);
 
 // Ruta para los detalles de un pedido
-router.get('/pedidos/:id', isAuthenticated, hasRole('client'), userController.getOrderDetails);
+router.get('/pedidos/:id', isAuthenticated, hasRole('client'), businessesController.getOrderDetail);
+
 
 // Ruta para las direcciones del usuario
 router.get('/direcciones', isAuthenticated, hasRole('client'), (req, res) => {

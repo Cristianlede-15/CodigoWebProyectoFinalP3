@@ -19,7 +19,9 @@ exports.markAsFavorite = async (req, res) => {
             console.log(`Usuario ${user_id} marcó el comercio ${business_id} como favorito.`);
         }
 
-        res.redirect(`/user/comercio/${business_id}`);
+        // Redirige de vuelta a la página anterior
+        res.redirect('back');
+
     } catch (error) {
         console.error('Error al marcar como favorito:', error);
         res.status(500).send('Error al marcar como favorito');
@@ -40,7 +42,9 @@ exports.removeFavorite = async (req, res) => {
             console.log(`Usuario ${user_id} eliminó el comercio ${business_id} de favoritos.`);
         }
 
-        res.redirect(`/user/comercio/${business_id}`);
+        // Redirige de vuelta a la página anterior
+        res.redirect('back');
+
     } catch (error) {
         console.error('Error al eliminar favorito:', error);
         res.status(500).send('Error al eliminar favorito');

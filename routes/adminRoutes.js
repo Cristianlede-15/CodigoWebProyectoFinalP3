@@ -178,4 +178,9 @@ router.post('/tipos_comercios/editar/:id', isAuthenticated, hasRole('admin'), up
 router.post('/tipos_comercios/eliminar/:id', isAuthenticated, hasRole('admin'), businessesController.deleteBusinessType);
 
 
+router.post('/logout', authController.logout);
+router.get('/logout', authController.logout);
+
+
+
 module.exports = router;

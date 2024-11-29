@@ -95,13 +95,13 @@
             <li><a href="/user/pedidos">Mis pedidos</a></li>
             <li><a href="/user/direcciones">Mis direcciones</a></li>
             <li><a href="/user/favoritos">Mis favoritos</a></li>
-            <li><a href="/user/logout">Cerrar sesión</a></li>
+            <li><a href="/auth/logout">Cerrar Sesión</a></li>
         </ul>
     </nav>
     <div class="profile-container">
         <h2>Mi Perfil</h2>
         <% if (user.profile_image) { %>
-            <img src="<%= user.profile_image %>" alt="Foto de perfil" class="profile-image">
+            <img src="/ImagesRepo/<%= user.profile_image %>" alt="Foto de perfil" class="profile-image">
         <% } else { %>
             <img src="/ImagesRepo/default-profile.png" alt="Foto de perfil" class="profile-image">
         <% } %>
@@ -113,7 +113,7 @@
             <input type="file" name="profile_image" accept="image/*">
             <div style="display: flex; justify-content: space-between;">
                 <button type="button" class="back-button" onclick="window.location.href='/user/home'">Volver al Home</button>
-                <button type="submit" class="save-button">Guardar cambios</button>
+                <button type="submit" class="save-button">Guardar Cambios</button>
             </div>
         </form>
     </div>

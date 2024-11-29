@@ -23,6 +23,13 @@ router.get('/orders', isAuthenticated, hasRole('business'), async (req, res) => 
         res.status(500).json({ message: 'Error fetching orders', error: error.message });
     }
 });
+// Ruta para el detalle del pedido
+router.get('/orders/:id', isAuthenticated, hasRole('business'), businessesController.getOrderDetail);
+
+
+// Ruta para asignar delivery a un pedido
+router.post('/orders/:id/assign-delivery', isAuthenticated, hasRole('business'), businessesController.assignDelivery);
+
 
 // Otras rutas protegidas para negocios
 router.get('/perfil', isAuthenticated, hasRole('business'), (req, res) => {
@@ -39,7 +46,7 @@ router.get('/productos', isAuthenticated, hasRole('business'), businessesControl
 router.get('/productos/crear', isAuthenticated, hasRole('business'), businessesController.renderCreateProductForm);
 
 // Ruta para crear un nuevo producto
-router.post('/productos/crear', isAuthenticated, hasRole('business'), businessesController.createProduct);
+router.post('/productos/crear', isAuthenticated, hasRole('business'), upload.single('image'), businessesController.createProduct);
 
 // Ruta para renderizar el formulario de edición de producto
 router.get('/productos/editar/:id', isAuthenticated, hasRole('business'), businessesController.renderEditProductForm);
