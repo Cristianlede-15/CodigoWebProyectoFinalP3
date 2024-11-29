@@ -466,3 +466,88 @@ exports.getOrderDetails = async (req, res) => {
         res.status(500).send('Error al obtener los detalles del pedido');
     }
 };
+
+
+exports.getAssignedOrders = async (req, res) => {
+    const userId = req.session.user.id;
+    try {
+        const orders = await Order.findAll({
+            where: { delivery_id: userId },
+            include: [
+                {
+                    model: Business,
+                    as: 'business',
+                    attributes: ['business_name', 'logo']
+                },
+                {
+                    model: Product,
+                    as: 'products',
+                    attributes: ['id']
+                }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+        res.render('deliveryViews/home', { user: req.session.user, orders });
+    } catch (error) {
+        console.error('Error fetching assigned orders:', error);
+        res.status(500).send('Error fetching assigned orders');
+    }
+};
+
+exports.getOrderDetails = async (req, res) => {
+    const userId = req.session.user.id;
+    const orderId = req.params.id;
+    try {
+        const order = await Order.findOne({
+            where: { id: orderId, delivery_id: userId },
+            include: [
+                {
+                    model: Business,
+                    as: 'business',
+                    attributes: ['business_name', 'logo']
+                },
+                {
+                    model: Product,
+                    as: 'products',
+                    attributes: ['name', 'price', 'image']
+                },
+                {
+                    model: Address,
+                    as: 'address',
+                    attributes: ['name', 'description']
+                }
+            ]
+        });
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+        res.render('deliveryViews/orderDetails', { user: req.session.user, order });
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+        res.status(500).send('Error fetching order details');
+    }
+};
+
+exports.completeOrder = async (req, res) => {
+    const userId = req.session.user.id;
+    const orderId = req.params.id;
+    try {
+        const order = await Order.findOne({ where: { id: orderId, delivery_id: userId } });
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+        order.status = 'completed';
+        await order.save();
+
+        const deliveryStatus = await DeliveryStatus.findOne({ where: { user_id: userId } });
+        if (deliveryStatus) {
+            deliveryStatus.is_available = true;
+            await deliveryStatus.save();
+        }
+
+        res.redirect(`/delivery/order/${orderId}`);
+    } catch (error) {
+        console.error('Error completing order:', error);
+        res.status(500).send('Error completing order');
+    }
+};

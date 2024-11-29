@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Pedido</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .order-info p {
+            margin: 5px 0;
+        }
+
+        .products {
+            margin-bottom: 1.5rem;
+        }
+
+        .product {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #fff;
+        }
+
+        .product img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            margin-right: 1rem;
+            object-fit: cover;
+        }
+
+        .product-info {
+            flex-grow: 1;
+        }
+
+        .product-info p {
+            margin: 5px 0;
+        }
+
+        .complete-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .complete-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li><a href="/delivery/home">Home</a></li>
+            <li><a href="/delivery/perfil">Mi perfil</a></li>
+            <li><a href="/delivery/logout">Logout</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h2>Detalle del Pedido</h2>
+        <div class="order-info">
+            <p>Comercio: <%= order.business.business_name %></p>
+            <p>Estado: <%= order.status %></p>
+            <p>Fecha: <%= order.createdAt.toLocaleDateString() %> Hora: <%= order.createdAt.toLocaleTimeString() %></p>
+            <p>Total: $<%= order.total %></p>
+            <p>Dirección de entrega: <%= order.address.description %></p>
+        </div>
+        <div class="products">
+            <h3>Productos</h3>
+            <% order.products.forEach(product => { %>
+                <div class="product">
+                    <img src="<%= product.image %>" alt="Imagen del Producto">
+                    <div class="product-info">
+                        <p>Nombre: <%= product.name %></p>
+                        <p>Precio: $<%= product.price %></p>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+        <% if (order.status === 'in process') { %>
+            <form action="/delivery/order/<%= order.id %>/complete" method="POST">
+                <button type="submit" class="complete-button">Completar Pedido</button>
+            </form>
+        <% } %>
+    </div>
+</body>
+</html>

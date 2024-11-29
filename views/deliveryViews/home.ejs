@@ -74,29 +74,30 @@
         <ul class="navbar-menu">
             <li><a href="/delivery/home">Home</a></li>
             <li><a href="/delivery/perfil">Mi perfil</a></li>
-            <li><a href="/delivery/perfil">Logout</a></li>
+            <li><a href="/delivery/logout">Logout</a></li>
         </ul>
     </nav>
     
     <div class="container">
         <h2>Pedidos Asignados</h2>
-        <div class="order">
-            <img src="path/to/logo1.png" alt="Logo Comercio">
-            <div class="order-info">
-                <p class="status">En proceso</p>
-                <p>Total: $50.00</p>
-                <p>Fecha: 2024-11-14</p>
-            </div>
-        </div>
-        <div class="order">
-            <img src="path/to/logo2.png" alt="Logo Comercio">
-            <div class="order-info">
-                <p class="status">En proceso</p>
-                <p>Total: $30.00</p>
-                <p>Fecha: 2024-11-14</p>
-            </div>
-        </div>
-        <!-- Agrega más pedidos según sea necesario -->
+        <% if (orders && orders.length > 0) { %>
+            <% orders.forEach(order => { %>
+                <div class="order">
+                    <a href="/delivery/order/<%= order.id %>">
+                        <img src="<%= order.business.logo %>" alt="Logo Comercio">
+                        <div class="order-info">
+                            <p class="status"><%= order.status %></p>
+                            <p>Comercio: <%= order.business.business_name %></p>
+                            <p>Total: $<%= order.total %></p>
+                            <p>Cantidad de productos: <%= order.products ? order.products.length : 0 %></p>
+                            <p>Fecha: <%= order.createdAt.toLocaleDateString() %> Hora: <%= order.createdAt.toLocaleTimeString() %></p>
+                        </div>
+                    </a>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No hay pedidos asignados.</p>
+        <% } %>
     </div>
 </body>
 </html>
