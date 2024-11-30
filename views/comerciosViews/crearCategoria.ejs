@@ -4,10 +4,71 @@
 <head>
     <meta charset="UTF-8">
     <title>Crear Categoría</title>
-    <link rel="stylesheet" href="/css/navbar.css">
     <style>
-        /* Agrega estilos relevantes aquí */
+        /* Navbar styles */
+        .navbar {
+            background-color: #343a40;
+            padding: 10px 20px;
+        }
+        .navbar-menu {
+            list-style: none;
+            display: flex;
+            justify-content: flex-end;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-menu li {
+            margin-left: 20px;
+        }
+        .navbar-menu a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .navbar-menu a:hover {
+            color: #dcdcdc;
+        }
+
+        /* Categories container styles */
+        .categories-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .categories-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .categories-container form label {
+            font-weight: bold;
+        }
+        .categories-container form input,
+        .categories-container form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        .categories-container form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .categories-container form button:hover {
+            background-color: #218838;
+        }
     </style>
+    <link rel="stylesheet" href="/css/register.css">
 </head>
 <body>
     <nav class="navbar">

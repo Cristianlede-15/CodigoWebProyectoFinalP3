@@ -5,188 +5,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comercios</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/css/navbar.css">
-    <style>
-        /* Estilos generales */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        /* Contenedor principal */
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .container h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Formulario de búsqueda */
-        .search-form {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .search-form input[type="text"] {
-            padding: 0.5rem;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-right: 0.5rem;
-        }
-
-        .search-form button {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .search-form button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Texto de cantidad de comercios */
-        .business-count {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.2rem;
-            color: #666;
-        }
-
-        /* Comercios */
-        .business {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            background-color: #f9f9f9;
-        }
-
-        .business:hover {
-            background-color: #f1f1f1;
-        }
-
-        .business img {
-            width: 50px;
-            height: 50px;
-            border-radius: 4px;
-            margin-right: 1rem;
-        }
-
-        .business span {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .business button {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .business button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Botón para volver atrás */
-        .back-button {
-            display: block;
-            margin: 2rem auto;
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 4px;
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .back-button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Mensaje vacío */
-        .container p {
-            text-align: center;
-            color: #666;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/clienteViews.css">
 </head>
 <body>
-    <nav class="navbar">
-        <ul class="navbar-menu">
-            <li><a href="/user/home">Home</a></li>
-            <li><a href="/user/perfil">Mi perfil</a></li>
-            <li><a href="/user/pedidos">Mis pedidos</a></li>
-            <li><a href="/user/direcciones">Mis direcciones</a></li>
-            <li><a href="/user/favoritos">Mis favoritos</a></li>
-            <li><a href="/auth/logout">Cerrar Sesión</a></li>
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/user/home"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/perfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/pedidos"><i class="fas fa-shopping-basket"></i> Mis Pedidos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/favoritos"><i class="fas fa-heart"></i> Mis Favoritos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+            </ul>
+        </div>
     </nav>
     
-    <div class="container">
-        <h2>Comercios</h2>
-        <form class="search-form" action="/user/comercios/<%= typeId %>/buscar" method="GET">
-            <input type="text" name="nombre" placeholder="Buscar comercio por nombre">
-            <button type="submit">Buscar</button>
+    <div class="comercios-container mt-5">
+        <h2 class="text-center mb-4"><i class="fas fa-store-alt"></i> Comercios</h2>
+        <form class="search-form form-inline justify-content-center" action="/user/comercios/<%= typeId %>/buscar" method="GET">
+            <input type="text" name="nombre" class="form-control mr-2" placeholder="Buscar comercio por nombre" required>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
         </form>
-        <div class="business-count">
-            <p>Hay <%= businesses.length %> comercios de este tipo.</p>
+        <div class="business-count text-center mb-3">
+            <p>Hay <strong><%= businesses.length %></strong> comercios de este tipo.</p>
         </div>
         <% if (businesses.length > 0) { %>
             <% businesses.forEach(function(business) { %>
-                <div class="business">
-                    <div>
-                        <a href="/user/comercio/<%= business.id %>">
-                            <img src="/ImagesRepo/<%= business.logo %>" alt="Logo">
-                            <span><%= business.business_name %></span>
-                        </a>
+                <div class="business card mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <a href="/user/comercio/<%= business.id %>" class="d-flex align-items-center text-decoration-none text-dark">
+                                <img src="/ImagesRepo/<%= business.logo %>" alt="Logo" class="business-logo mr-3">
+                                <span><%= business.business_name %></span>
+                            </a>
+                        </div>
+                        
+                        <% if (favoriteBusinessIds.includes(business.id)) { %>
+                            <!-- Si es favorito, mostrar botón para eliminar de favoritos -->
+                            <form action="/favorites/eliminar" method="POST">
+                                <input type="hidden" name="business_id" value="<%= business.id %>">
+                                <button type="submit" class="btn btn-danger btn-sm favorite-button">
+                                    <i class="fas fa-heart-broken"></i> Eliminar Favorito
+                                </button>
+                            </form>
+                        <% } else { %>
+                            <!-- Si no es favorito, mostrar botón para agregar a favoritos -->
+                            <form action="/favorites/marcar" method="POST">
+                                <input type="hidden" name="business_id" value="<%= business.id %>">
+                                <button type="submit" class="btn btn-success btn-sm favorite-button">
+                                    <i class="fas fa-heart"></i> Marcar como Favorito
+                                </button>
+                            </form>
+                        <% } %>
                     </div>
-                    
-                    <% if (favoriteBusinessIds.includes(business.id)) { %>
-                        <!-- Si es favorito, mostrar botón para eliminar de favoritos -->
-                        <form action="/favorites/eliminar" method="POST">
-                            <input type="hidden" name="business_id" value="<%= business.id %>">
-                            <button type="submit" class="favorite-button">Eliminar Favorito</button>
-                        </form>
-                    <% } else { %>
-                        <!-- Si no es favorito, mostrar botón para agregar a favoritos -->
-                        <form action="/favorites/marcar" method="POST">
-                            <input type="hidden" name="business_id" value="<%= business.id %>">
-                            <button type="submit" class="favorite-button">Marcar como Favorito</button>
-                        </form>
-                    <% } %>
                 </div>
             <% }); %>
         <% } else { %>
             <p>No hay comercios disponibles en este momento.</p>
         <% } %>
-        <a href="/user/home" class="back-button">Volver</a>
+        <a href="/user/home" class="btn back-button"><i class="fas fa-arrow-left"></i> Volver</a>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

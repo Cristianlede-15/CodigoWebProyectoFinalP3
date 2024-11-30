@@ -5,131 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Direcciones</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/css/navbar.css">
-    <style>
-        /* Estilos generales */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        /* Contenedor principal */
-        .addresses-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .addresses-container h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Estilo de cada dirección */
-        .address {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            background: #fff;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .address:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transform: scale(1.02);
-        }
-
-        .address-info p {
-            margin: 0;
-            font-size: 1rem;
-            color: #333;
-        }
-
-        /* Botones de acciones */
-        .address-actions button {
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 0.5rem;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .address-actions button:hover {
-            background-color: #ffcc00;
-            color: #333;
-            transform: scale(1.1);
-        }
-
-        /* Botón para agregar nueva dirección */
-        .add-button {
-            display: block;
-            width: 100%;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 0.8rem;
-            font-size: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 1.5rem;
-            text-align: center;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .add-button:hover {
-            background-color: #218838;
-            transform: scale(1.05);
-        }
-    </style>
+    <link rel="stylesheet" href="/css/clienteViews.css">
 </head>
 <body>
-    <nav class="navbar">
-        <ul class="navbar-menu">
-            <li><a href="/user/home">Home</a></li>
-            <li><a href="/user/perfil">Mi perfil</a></li>
-            <li><a href="/user/pedidos">Mis pedidos</a></li>
-            <li><a href="/user/direcciones">Mis direcciones</a></li>
-            <li><a href="/user/favoritos">Mis favoritos</a></li>
-            <li><a href="/auth/logout">Cerrar Sesión</a></li>
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/user/home"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/perfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/pedidos"><i class="fas fa-shopping-basket"></i> Mis Pedidos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/favoritos"><i class="fas fa-heart"></i> Mis Favoritos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+            </ul>
+        </div>
     </nav>
     
-    <div class="addresses-container">
-        <h2>Mis Direcciones</h2>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Mis Direcciones</h2>
 
         <% if (addresses.length === 0) { %>
-            <p>No tienes ninguna dirección creada. <a href="/user/direcciones/agregar">Agregar una dirección</a></p>
+            <p class="no-addresses-message">No tienes ninguna dirección creada. <a href="/user/direcciones/agregar" class="btn btn-success"><i class="fas fa-plus"></i> Agregar una dirección</a></p>
         <% } else { %>
-            <% addresses.forEach(address => { %>
-                <div class="address">
-                    <div class="address-info">
-                        <p><strong><%= address.name %></strong>: <%= address.description %></p>
+            <div class="addresses-list">
+                <% addresses.forEach(address => { %>
+                    <div class="address card mb-3">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div class="address-info">
+                                <p><i class="fas fa-map-marker-alt"></i> <strong><%= address.name %></strong>: <%= address.description %></p>
+                            </div>
+                            <div class="address-actions">
+                                <a href="/user/direcciones/editar/<%= address.id %>" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                                <form action="/user/direcciones/eliminar/<%= address.id %>" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar esta dirección?');">
+                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div class="address-actions">
-                        <a href="/user/direcciones/editar/<%= address.id %>"><button>Editar</button></a>
-                        <form action="/user/direcciones/eliminar/<%= address.id %>" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar esta dirección?');">
-                            <button type="submit">Eliminar</button>
-                        </form>
-                    </div>
-                </div>
-            <% }) %>
+                <% }) %>
+            </div>
         <% } %>
         
-        <a href="/user/direcciones/agregar"><button class="add-button">Agregar nueva dirección</button></a>
+        <a href="/user/direcciones/agregar" class="btn btn-success btn-block mt-4"><i class="fas fa-plus"></i> Agregar nueva dirección</a>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

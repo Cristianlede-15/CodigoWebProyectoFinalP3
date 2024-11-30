@@ -1,142 +1,65 @@
+<!-- FILE: productos.ejs -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Productos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/css/navbar.css">
-    <style>
-        /* Estilos generales */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        /* Contenedor principal */
-        .catalog-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .catalog-container h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Productos */
-        .product {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            background: #fff;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .product:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transform: scale(1.02);
-        }
-
-        .product img {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            object-fit: cover;
-        }
-
-        .product-info {
-            flex-grow: 1;
-            margin-left: 1rem;
-        }
-
-        .product-info p {
-            margin: 0.2rem 0;
-            font-size: 1rem;
-            color: #333;
-        }
-
-        /* Botón "Agregar al carrito" */
-        .add-to-cart-button {
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .add-to-cart-button:hover {
-            background-color: #28a745;
-            transform: scale(1.1);
-        }
-
-        /* Botón "Volver" */
-        .back-button {
-            display: block;
-            width: 100%;
-            margin-top: 2rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 0.8rem;
-            font-size: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .back-button:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-    </style>
+    <link rel="stylesheet" href="/css/clienteViews.css">
 </head>
 <body>
-    <nav class="navbar">
-        <ul class="navbar-menu">
-            <li><a href="/user/home">Home</a></li>
-            <li><a href="/user/perfil">Mi perfil</a></li>
-            <li><a href="/user/pedidos">Mis pedidos</a></li>
-            <li><a href="/user/direcciones">Mis direcciones</a></li>
-            <li><a href="/user/favoritos">Mis favoritos</a></li>
-            <li><a href="/auth/logout">Cerrar Sesión</a></li>
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/user/home"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/perfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/pedidos"><i class="fas fa-shopping-basket"></i> Mis Pedidos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/favoritos"><i class="fas fa-heart"></i> Mis Favoritos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+            </ul>
+        </div>
     </nav>
     
     <div class="catalog-container">
-        <h2>Catálogo de Productos</h2>
-        <div class="product">
-            <img src="path/to/product1.png" alt="Producto 1">
-            <div class="product-info">
-                <p>Producto 1</p>
-                <p>Precio: $10.00</p>
+        <h2 class="text-center mb-4"><i class="fas fa-box-open"></i> Catálogo de Productos</h2>
+        <div class="product-list">
+            <div class="product card mb-4">
+                <div class="row no-gutters align-items-center">
+                    <div class="col-md-3 text-center">
+                        <img src="path/to/product1.png" alt="Producto 1" class="product-image">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= product.name %></h5>
+                            <p class="card-text"><i class="fas fa-dollar-sign"></i> Precio: $<%= product.price.toFixed(2) %></p>
+                            <p class="card-text"><i class="fas fa-info-circle"></i> <%= product.description %></p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <form action="/user/carrito/agregar" method="POST">
+                            <input type="hidden" name="product_id" value="<%= product.id %>">
+                            <button type="submit" class="btn add-to-cart-button"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <button class="add-to-cart-button">Agregar al carrito</button>
+            <!-- Repite el bloque de producto según sea necesario -->
         </div>
-        <div class="product">
-            <img src="path/to/product2.png" alt="Producto 2">
-            <div class="product-info">
-                <p>Producto 2</p>
-                <p>Precio: $15.00</p>
-            </div>
-            <button class="add-to-cart-button">Agregar al carrito</button>
-        </div>
-        <!-- Agrega más productos según sea necesario -->
-        <button class="back-button">Volver al listado de comercios</button>
+        <button class="back-button" onclick="window.location.href='/user/comercios'">
+            <i class="fas fa-arrow-left"></i> Volver al listado de comercios
+        </button>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

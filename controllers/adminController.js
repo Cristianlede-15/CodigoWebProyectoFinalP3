@@ -2,6 +2,9 @@ const Configuracion = require('../models/Configuracion');
 const userController = require('./userController');
 const Users = require('../models/Users');
 const bcrypt = require('bcryptjs');
+const Business = require('../models/Business');
+const Sequelize = require('sequelize');
+
 
 exports.mostrarConfiguracion = async (req, res) => {
     try {
@@ -177,5 +180,23 @@ exports.toggleDelivery = async (req, res) => {
     } catch (error) {
         console.error('Error toggling delivery:', error);
         res.status(500).send('Error toggling delivery');
+    }
+};
+
+
+exports.searchBusinesses = async (req, res) => {
+    try {
+        const { query } = req.query;
+        const comercios = await Business.findAll({
+            where: {
+                business_name: {
+                    [Sequelize.Op.like]: `%${query}%`
+                }
+            }
+        });
+        res.render('adminViews/comercios', { comercios });
+    } catch (error) {
+        console.error('Error searching businesses:', error);
+        res.status(500).send('Error searching businesses');
     }
 };

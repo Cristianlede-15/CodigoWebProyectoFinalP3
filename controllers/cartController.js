@@ -115,12 +115,18 @@ exports.checkout = async (req, res) => {
             return res.status(400).send('No hay deliverys disponibles en este momento.');
         }
 
-        // Calcular subtotal y tax_rate
+        // Obtener tax_rate desde Configuracion
+        const config = await Configuracion.findOne();
+        const tax_rate = config ? config.tax_rate / 100 : 0.18; // Convertir a decimal
+
+        // Calcular subtotal
         const subtotal = cart.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-        const tax_rate = 0.18; // Ejemplo de tasa de impuesto del 18%
         const business_id = req.session.business_id;
 
-        console.log(`Subtotal: ${subtotal}, Tax Rate: ${tax_rate}, Business ID: ${business_id}`);
+        // Calcular el total con impuestos
+        const total = subtotal + (subtotal * tax_rate);
+
+        console.log(`Subtotal: ${subtotal}, Tax Rate: ${tax_rate}, Total: ${total}, Business ID: ${business_id}`);
 
         // 2. Crear el pedido
         const order = await Orders.create({
@@ -128,7 +134,7 @@ exports.checkout = async (req, res) => {
             address_id,
             delivery_id: delivery.id, // Asignar el delivery al pedido
             status: 'in_process', // Cambiar el estado a 'in_process'
-            total: cart.total,
+            total, // Usar el total calculado con impuestos
             subtotal,
             tax_rate,
             business_id

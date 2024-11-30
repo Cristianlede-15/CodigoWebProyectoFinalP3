@@ -5,117 +5,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Dirección</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/css/navbar.css">
-    <style>
-        /* Estilos similares a agregarDireccion.ejs */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        .address-form-container {
-            max-width: 600px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .address-form-container h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 1.5rem;
-        }
-
-        .address-form-container form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .address-form-container label {
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .address-form-container input, .address-form-container textarea {
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .address-form-container button {
-            padding: 0.7rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-        }
-
-        .address-form-container button:hover {
-            background-color: #0056b3;
-        }
-
-        .back-link {
-            text-align: center;
-            margin-top: 1rem;
-        }
-
-        .back-link a {
-            color: #3498db;
-            text-decoration: none;
-        }
-
-        .back-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* Estilos para los mensajes */
-        .alert {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .alert.error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/clienteViews.css">
 </head>
 <body>
-    <nav class="navbar">
-        <ul class="navbar-menu">
-            <li><a href="/user/home">Home</a></li>
-            <li><a href="/user/perfil">Mi perfil</a></li>
-            <li><a href="/user/pedidos">Mis pedidos</a></li>
-            <li><a href="/user/direcciones">Mis direcciones</a></li>
-            <li><a href="/user/favoritos">Mis favoritos</a></li>
-            <li><a href="/auth/logout">Cerrar Sesión</a></li>
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/user/home"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/perfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/pedidos"><i class="fas fa-shopping-basket"></i> Mis Pedidos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/favoritos"><i class="fas fa-heart"></i> Mis Favoritos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+            </ul>
+        </div>
     </nav>
     
-    <div class="address-form-container">
-        <h2>Editar Dirección</h2>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Editar Dirección</h2>
 
-        <form action="/user/direcciones/editar/<%= address.id %>" method="POST">
-            <label for="name">Nombre de la Dirección</label>
-            <input type="text" id="name" name="name" value="<%= address.name %>" required>
 
-            <label for="description">Dirección Completa</label>
-            <textarea id="description" name="description" rows="3" required><%= address.description %></textarea>
+        <div class="address-form-container card p-4">
+            <form action="/user/direcciones/editar/<%= address.id %>" method="POST">
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-map-signs"></i> Nombre de la Dirección</label>
+                    <input type="text" id="name" name="name" class="form-control" value="<%= address.name %>" required>
+                </div>
 
-            <button type="submit">Actualizar Dirección</button>
-        </form>
-        <div class="back-link">
-            <a href="/user/direcciones">Volver a Mis Direcciones</a>
+                <div class="form-group">
+                    <label for="description"><i class="fas fa-address-card"></i> Dirección Completa</label>
+                    <textarea id="description" name="description" class="form-control" rows="3" required><%= address.description %></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> Actualizar Dirección</button>
+            </form>
+            <div class="back-link mt-3 text-center">
+                <a href="/user/direcciones" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver a Mis Direcciones</a>
+            </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

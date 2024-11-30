@@ -365,53 +365,58 @@ exports.showProfile = async (req, res) => {
     }
 };
 
+// controllers/userController.js
+
+exports.showDeliveryProfile = async (req, res) => {
+    const userId = req.session.user.id;
+    try {
+        const user = await User.findByPk(userId);
+        res.render('deliveryViews/perfil', { user });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).send('Error fetching user profile');
+    }
+};
+
 // Actualizar la información del perfil del usuario
 exports.updateProfile = async (req, res) => {
     const userId = req.session.user.id;
     const { first_name, last_name, phone } = req.body;
-    let profile_image = req.body.profile_image;
+    let profile_image = req.session.user.profile_image; // Default to existing image
+
+    // Handle uploaded profile image
+    if (req.file) {
+        profile_image = req.file.filename; // Ensure the path matches your setup
+    }
 
     try {
-        const user = await User.findByPk(userId);
+        // Update the user in the database
+        await User.update(
+            { first_name, last_name, phone, profile_image },
+            { where: { id: userId } }
+        );
 
-        if (!user) {
-            return res.status(404).send('Usuario no encontrado');
-        }
+        // Fetch the updated user data
+        const updatedUser = await User.findByPk(userId);
 
-        // Si se subió una nueva imagen de perfil
-        if (req.file) {
-            // Eliminar la imagen anterior si existe
-            if (user.profile_image) {
-                const oldImagePath = path.join(__dirname, '..', 'ImagesRepo', path.basename(user.profile_image));
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath);
-                }
-            }
+        // Update the session with the latest user data
+        req.session.user = {
+            id: updatedUser.id,
+            nombre: updatedUser.first_name, // Map correctly
+            email: updatedUser.email,
+            role: updatedUser.role,
+            profile_image: updatedUser.profile_image // Add if needed
+        };
 
-            // Guardar la nueva imagen
-            profile_image = `${req.file.filename}`;
-        } else {
-            profile_image = user.profile_image;
-        }
+        console.log('Updated Session User:', req.session.user); // Debug statement
 
-        // Actualizar los datos del usuario
-        await user.update({
-            first_name,
-            last_name,
-            phone,
-            profile_image
-        });
-
-        // Actualizar la sesión con nuevos datos
-        req.session.user = user;
-
-        res.redirect('/user/perfil');
+        // Redirect to the profile page
+        res.redirect('/delivery/perfil');
     } catch (error) {
-        console.error('Error al actualizar el perfil del usuario:', error);
-        res.status(500).send('Error al actualizar el perfil del usuario');
+        console.error('Error updating user profile:', error);
+        res.status(500).send('Error updating user profile');
     }
 };
-
 
 // Obtener todos los pedidos del usuario
 exports.getUserOrders = async (req, res) => {

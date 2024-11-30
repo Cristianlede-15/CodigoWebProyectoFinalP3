@@ -1,4 +1,3 @@
-<!-- views/clienteViews/comercio.ejs -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,202 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles del Comercio</title>
     <link rel="stylesheet" href="/css/navbar.css">
-    <style>
-        /* Estilos generales */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        /* Contenedor principal */
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .container h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 1.5rem;
-        }
-
-        .business-details {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .business-details img {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            object-fit: cover;
-        }
-
-        .business-details span {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .business-details p {
-            font-size: 1rem;
-            color: #666;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .favorite-button {
-            padding: 0.5rem 1rem;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 1rem;
-        }
-
-        .favorite-button:hover {
-            background-color: #2980b9;
-        }
-
-        .back-button {
-            display: block;
-            margin: 1.5rem auto;
-            padding: 0.5rem 1rem;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .back-button:hover {
-            background-color: #c0392b;
-        }
-
-        .cart {
-            margin-top: 2rem;
-        }
-
-        .cart ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .cart li {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .cart li span {
-            flex: 1;
-        }
-
-        .cart li form {
-            display: inline;
-        }
-
-        .cart-total {
-            text-align: right;
-            font-weight: bold;
-            margin-top: 1rem;
-        }
-
-        .cart-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1rem;
-        }
-
-        .cart-buttons a,
-        .cart-buttons button {
-            padding: 0.5rem 1rem;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .cart-buttons a:hover,
-        .cart-buttons button:hover {
-            background-color: #2980b9;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/clienteViews.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-    <nav class="navbar">
-        <ul class="navbar-menu">
-            <li><a href="/user/home">Home</a></li>
-            <li><a href="/user/perfil">Mi perfil</a></li>
-            <li><a href="/user/pedidos">Mis pedidos</a></li>
-            <li><a href="/user/direcciones">Mis direcciones</a></li>
-            <li><a href="/user/favoritos">Mis favoritos</a></li>
-            <li><a href="/auth/logout">Cerrar Sesión</a></li>
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/user/home"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/perfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/pedidos"><i class="fas fa-shopping-basket"></i> Mis Pedidos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a></li>
+                <li class="nav-item"><a class="nav-link" href="/user/favoritos"><i class="fas fa-heart"></i> Mis Favoritos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+            </ul>
+        </div>
     </nav>
 
-    <div class="container">
-        <h2><%= business.business_name %></h2>
+    <div class="container mt-5">
+        <h2 class="text-center"><%= business.business_name %></h2>
 
         <!-- Mostrar categorías y productos -->
         <% categories.forEach(function(category) { %>
-            <h3><%= category.name %></h3>
-            <div class="products">
+            <h3 class="mt-4"><%= category.name %></h3>
+            <div class="row">
                 <% category.products.forEach(function(product) { %>
-                    <div class="product">
-                        <img src="/ImagesRepo/<%= product.image %>" alt="<%= product.name %>">
-                        <h4><%= product.name %></h4>
-                        <p><%= product.description %></p>
-                        <p>Precio: $<%= product.price %></p>
-                        <form action="/cart/add" method="POST">
-                            <input type="hidden" name="product_id" value="<%= product.id %>">
-                            <% if (cart.items.some(item => item.product.id === product.id)) { %>
-                                <button type="submit" disabled>Agregado</button>
-                            <% } else { %>
-                                <button type="submit">Agregar al Carrito</button>
-                            <% } %>
-                        </form>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="/ImagesRepo/<%= product.image %>" class="card-img-top" alt="<%= product.name %>">
+                            <div class="card-body">
+                                <h4 class="card-title"><%= product.name %></h4>
+                                <p class="card-text"><%= product.description %></p>
+                                <p class="card-text">Precio: $<%= product.price %></p>
+                                <form action="/cart/add" method="POST">
+                                    <input type="hidden" name="product_id" value="<%= product.id %>">
+                                    <% if (cart.items.some(item => item.product.id === product.id)) { %>
+                                        <button type="submit" class="btn btn-secondary" disabled>Agregado</button>
+                                    <% } else { %>
+                                        <button type="submit" class="btn btn-primary">Agregar al Carrito</button>
+                                    <% } %>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 <% }); %>
             </div>
         <% }); %>
 
         <!-- Carrito de compras -->
-        <div class="cart">
+        <div class="cart mt-5">
             <h3>Mi Pedido</h3>
-            <ul>
+            <ul class="list-group">
                 <% cart.items.forEach(item => { %>
-                    <li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span><%= item.product.name %></span>
                         <span>$<%= item.product.price %></span>
-                        <form action="/cart/remove" method="POST">
+                        <form action="/cart/remove" method="POST" class="ml-3">
                             <input type="hidden" name="productId" value="<%= item.product.id %>">
-                            <button type="submit">Quitar</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Quitar</button>
                         </form>
                     </li>
                 <% }) %>
             </ul>
-            <p class="cart-total">Subtotal: $<%= cart.total %></p>
+            <p class="cart-total mt-3">Subtotal: $<%= cart.total %></p>
             <p class="cart-total">ITBIS (<%= taxRate %>%): $<%= (cart.total * taxRate / 100).toFixed(2) %></p>
             <p class="cart-total">Total: $<%= (cart.total * (1 + taxRate / 100)).toFixed(2) %></p>
-            <div class="cart-buttons">
-                <a href="/checkout">Continuar</a>
-                <a href="/user/comercios/<%= business.business_type_id %>">Volver a comercios</a>
+            <div class="cart-buttons mt-3">
+                <a href="/checkout" class="btn btn-success">Continuar</a>
+                <a href="/user/comercios/<%= business.business_type_id %>" class="btn btn-secondary">Volver a comercios</a>
             </div>
         </div>
     </div>

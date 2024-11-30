@@ -1,95 +1,67 @@
+<!-- views/clienteViews/perfil.ejs -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil del Delivery</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/css/navbar.css">
-    <style>
-        /* Estilos generales */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        /* Contenedor principal */
-        .profile-container {
-            max-width: 600px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .profile-container h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Formulario */
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        form input {
-            width: 100%;
-            padding: 0.8rem;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            transition: border-color 0.3s ease;
-        }
-
-        form input:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-
-        /* Botones */
-        form button {
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 0.8rem;
-            font-size: 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        form button[type="submit"]:hover {
-            background-color: #28a745;
-            transform: scale(1.05);
-        }
-
-        form button[type="button"]:hover {
-            background-color: #ffcc00;
-            transform: scale(1.05);
-        }
-    </style>
+    <link rel="stylesheet" href="/css/deliveryViews.css">
 </head>
 <body>
-    <nav class="navbar">
-        <ul class="navbar-menu">
-            <li><a href="/delivery/home">Home</a></li>
-            <li><a href="/delivery/perfil">Mi perfil</a></li>
-            <li><a href="/auth/logout">Cerrar Sesión</a></li>
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/delivery/home"><i class="fas fa-home small-icon"></i> Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/delivery/perfil"><i class="fas fa-user small-icon"></i> Mi Perfil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/logout"><i class="fas fa-sign-out-alt small-icon"></i> Cerrar Sesión</a>
+                </li>
+            </ul>
+        </div>
     </nav>
-    <div class="profile-container">
-        <h2>Mi Perfil</h2>
-        <form>
-            <input type="text" placeholder="Nombre" required>
-            <input type="tel" placeholder="Teléfono" required>
-            <input type="email" placeholder="Email" required>
-            <button type="submit">Guardar cambios</button>
-        </form>
+    <div class="container mt-5">
+        <div class="profile-container card p-4">
+            <h2 class="text-center mb-4"><i class="fas fa-user-circle small-icon"></i> Mi Perfil</h2>
+            <form action="/delivery/perfil" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="first_name"><i class="fas fa-user small-icon"></i> Nombre</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" value="<%= user.first_name %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name"><i class="fas fa-user-tag small-icon"></i> Apellido</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" value="<%= user.last_name %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone"><i class="fas fa-phone small-icon"></i> Teléfono</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" value="<%= user.phone %>" required>
+                </div>
+                <div class="form-group profile-image d-flex align-items-center">
+                    <label><i class="fas fa-image small-icon"></i> Foto de Perfil</label>
+                    <% if (user.profile_image) { %>
+                        <img src="/ImagesRepo/<%= user.profile_image %>" alt="Foto de Perfil" class="profile-img mr-3">
+                    <% } else { %>
+                        <img src="/images/no-image.png" alt="Sin imagen" class="profile-img mr-3">
+                    <% } %>
+                    <input type="file" class="form-control-file" name="profile_image">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save small-icon"></i> Guardar cambios</button>
+                <button type="button" onclick="window.history.back()" class="btn btn-secondary btn-block mt-2"><i class="fas fa-arrow-left small-icon"></i> Volver Atrás</button>
+            </form>
+        </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

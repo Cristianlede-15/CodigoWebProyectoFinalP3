@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Tipo de Comercio</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/adminViews.css">
 </head>
 <body>
     <nav class="navbar">
@@ -21,27 +24,30 @@
         </ul>
     </nav>
     
-    <div class="commerce-container">
-        <h2>Editar Tipo de Comercio</h2>
-        <form action="/admin/tipos_comercios/editar/<%= businessType.id %>" method="POST" enctype="multipart/form-data">
-            <div>
-                <label for="name">Nombre:</label>
-                <input type="text" id="name" name="name" value="<%= businessType.name %>" required>
-            </div>
-            <div>
-                <label for="description">Descripción:</label>
-                <textarea id="description" name="description"><%= businessType.description %></textarea>
-            </div>
-            <div>
-                <label for="icon">Icono Actual:</label>
-                <img src="<%= businessType.icon %>" alt="<%= businessType.name %>" style="width: 32px; height: 32px;">
-            </div>
-            <div>
-                <label for="icon">Nuevo Icono (Archivo):</label>
-                <input type="file" id="icon" name="icon" accept="image/*">
-            </div>
-            <button type="submit" class="favorite-button">Guardar Cambios</button>
-        </form>
+    <div class="container mt-5">
+        <div class="form-container">
+            <h2>Editar Tipo de Comercio</h2>
+            <form action="/admin/tipos_comercios/editar/<%= businessType.id %>" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Nombre:</label>
+                    <input type="text" class="form-control" id="name" name="name" value="<%= businessType.name %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Descripción:</label>
+                    <textarea class="form-control" id="description" name="description"><%= businessType.description %></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="icon">Icono Actual:</label>
+                    <img src="<%= businessType.icon %>" alt="<%= businessType.name %>" style="width: 32px; height: 32px;">
+                </div>
+                <div class="form-group">
+                    <label for="icon">Nuevo Icono (Archivo):</label>
+                    <input type="file" class="form-control-file" id="icon" name="icon" accept="image/*">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> Guardar Cambios</button>
+                <a href="/admin/tipos_comercios" class="btn btn-secondary btn-block"><i class="fas fa-times"></i> Cancelar</a>
+            </form>
+        </div>
     </div>
 </body>
 </html>

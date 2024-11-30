@@ -16,6 +16,9 @@ const authController = require('../controllers/authController');
 const orderController = require('../controllers/orderController');
 const upload = require('../config/multerConfig');
 const businessesController = require('../controllers/businessesController');
+const Sequelize = require('sequelize');
+const Orders = require('../models/Orders');
+
 
 // Ruta para /admin/dashboard
 router.get('/dashboard', isAuthenticated, hasRole('admin'), getDashboardMetrics);
@@ -38,14 +41,43 @@ router.post('/clientes/:id/toggle', isAuthenticated, hasRole('admin'), adminCont
 // Ruta para /admin/delivery
 router.get('/delivery', isAuthenticated, hasRole('admin'), async (req, res) => {
     try {
-        const deliveries = await getUsersByRole('delivery');
-        console.log(deliveries);
+        const deliveries = await Users.findAll({
+            where: { role: 'delivery' },
+            attributes: [
+                'id',
+                'first_name',
+                'last_name',
+                'phone',
+                'email',
+                'is_active',
+                [Sequelize.fn('COUNT', Sequelize.col('deliveries.id')), 'orderCount'],
+            ],
+            include: [
+                {
+                    model: Orders,
+                    as: 'deliveries',
+                    attributes: [],
+                },
+            ],
+            group: [
+                'Users.id',
+                'Users.first_name',
+                'Users.last_name',
+                'Users.phone',
+                'Users.email',
+                'Users.is_active',
+            ],
+        });
+
         res.render('adminViews/delivery', { deliveries });
     } catch (error) {
         console.error('Error fetching deliveries:', error);
         res.status(500).send('Error fetching deliveries');
     }
 });
+
+
+
 
 // Ruta para activar/inactivar delivery
 router.post('/delivery/:id/toggle', isAuthenticated, hasRole('admin'), async (req, res) => {
@@ -180,6 +212,9 @@ router.post('/tipos_comercios/eliminar/:id', isAuthenticated, hasRole('admin'), 
 
 router.post('/logout', authController.logout);
 router.get('/logout', authController.logout);
+
+
+router.get('/comercios/buscar', isAuthenticated, hasRole('admin'), adminController.searchBusinesses);
 
 
 

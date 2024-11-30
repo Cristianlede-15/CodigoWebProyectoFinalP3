@@ -47,8 +47,9 @@ exports.getBusinessesWithOrders = async () => {
 };
 
 // Toggle business active status
+// Toggle business active status
 exports.toggleBusinessStatus = async (req, res) => {
-    const businessId = req.session.business_id; // Actualizado para usar business_id directamente
+    const businessId = req.params.id; // Obtener el ID del negocio desde los parámetros de la ruta
     try {
         const business = await Business.findByPk(businessId);
         if (!business) {

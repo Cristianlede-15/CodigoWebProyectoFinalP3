@@ -4,103 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de Comercios</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/css/navbar.css">
-    <style>
-        /* Reset básico */
-        body, ul, li {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        /* Estilos de la página */
-        body {
-            background-color: #ecf0f1;
-            padding: 2rem;
-        }
-
-        .commerce-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .commerce-container h2 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 2rem;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2rem;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 0.8rem;
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .commerce {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            background: #fff;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .commerce:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transform: scale(1.02);
-        }
-
-        .commerce img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .commerce-info p {
-            margin: 0.2rem 0;
-            font-size: 1rem;
-            color: #333;
-        }
-
-        .favorite-button {
-            background-color: #2c3e50;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .favorite-button:hover {
-            background-color: #16a085;
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .total-commerces {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 1rem;
-            color: #555;
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/adminViews.css">
 </head>
 <body>
     <nav class="navbar">
@@ -116,12 +23,19 @@
         </ul>
     </nav>
     
-    <div class="commerce-container">
-        <h2>Listado de Comercios</h2>
-        <input type="text" class="search-bar" placeholder="Buscar comercios por nombre...">
+    <div class="container mt-5 commerce-container">
+        <h2 class="text-center">Listado de Comercios</h2>
+        <div class="input-group mb-3">
+            <form action="/admin/comercios/buscar" method="GET" class="d-flex w-100">
+                <input type="text" name="query" class="form-control search-bar" placeholder="Buscar comercios por nombre...">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Buscar</button>
+                </div>
+            </form>
+        </div>
         <% comercios.forEach(comercio => { %>
-            <div class="commerce">
-                <img src="/ImagesRepo/<%= comercio.logo || 'default.png' %>" alt="<%= comercio.business_name %> Logo">
+            <div class="commerce d-flex align-items-center justify-content-between mb-3 p-3 border rounded">
+                <img src="/ImagesRepo/<%= comercio.logo || 'default.png' %>" alt="<%= comercio.business_name %> Logo" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
                 <div class="commerce-info">
                     <p><strong>Nombre:</strong> <%= comercio.business_name %></p>
                     <p><strong>Teléfono:</strong> <%= comercio.phone %></p>
@@ -131,16 +45,16 @@
                 </div>
                 <% if (!comercio.is_active) { %>
                     <form action="/admin/comercios/<%= comercio.id %>/toggle" method="POST">
-                        <button type="submit" class="favorite-button">Activar</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-user-check"></i> Activar</button>
                     </form>
                 <% } else { %>
                     <form action="/admin/comercios/<%= comercio.id %>/toggle" method="POST">
-                        <button type="submit" class="favorite-button">Inactivar</button>
+                        <button type="submit" class="btn btn-warning"><i class="fas fa-user-slash"></i> Inactivar</button>
                     </form>
                 <% } %>
             </div>
         <% }) %>
-        <p class="total-commerces">Total de comercios disponibles: <%= comercios.length %></p>
+        <p class="total-commerces text-center">Total de comercios disponibles: <%= comercios.length %></p>
     </div>
 </body>
 </html>
