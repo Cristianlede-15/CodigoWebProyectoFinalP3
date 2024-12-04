@@ -493,3 +493,23 @@ exports.assignDelivery = async (req, res) => {
         res.status(500).send('Error al asignar delivery');
     }
 };
+
+exports.renderProfile = async (req, res) => {
+    const businessId = req.session.business_id;
+
+    if (!businessId) {
+        return res.status(401).send('No autorizado');
+    }
+
+    try {
+        const business = await Business.findByPk(businessId);
+        if (!business) {
+            return res.status(404).send('Negocio no encontrado');
+        }
+
+        res.render('comerciosViews/perfil', { user: business });
+    } catch (error) {
+        console.error('Error al obtener el perfil del negocio:', error);
+        res.status(500).send('Error interno del servidor');
+    }
+};

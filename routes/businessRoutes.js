@@ -32,9 +32,7 @@ router.post('/orders/:id/assign-delivery', isAuthenticated, hasRole('business'),
 
 
 // Otras rutas protegidas para negocios
-router.get('/perfil', isAuthenticated, hasRole('business'), (req, res) => {
-    res.render('comerciosViews/perfil', { user: req.session.user });
-});
+router.get('/perfil', businessesController.renderProfile);
 
 // Ruta para actualizar el perfil del negocio
 router.post('/perfil', upload.single('logo'), businessesController.updateProfile);
